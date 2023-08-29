@@ -1,0 +1,4133 @@
+#include<stdio.h>
+#include<conio.h>
+#include<malloc.h>
+#include<string.h>
+#include<stdlib.h>
+#include<graphics.h>
+#include<dos.h>
+#define TLC 218
+#define TRC 191
+#define BLC 192
+#define BRC 217
+#define VRL 179
+#define HRL 196
+struct ho_record
+{
+char ho_name[30];
+char ho_address[40];
+char ho_frname[30];
+char ho_phone[20],ho_addhar[20];
+char ho_date[15];
+char ho_branch[20];
+char ho_actype[20];
+long ho_acno;
+char ho_ifsc[7];
+long ho_fdepo;
+char ho_dob[15];
+}s;
+struct bemploy_record
+{
+char employ_name[30];
+char employ_address[30];
+char employ_post[25];
+long employ_salary;
+char employ_dob[15];
+char employ_dog[15];
+char employ_fname[30];
+char employ_addhar[20];
+char employ_pain[20];
+char employ_mob[15];
+}b;
+struct pass
+{
+char name[20];
+char pass[20];
+}p;
+int singhin();
+void singhup();
+void holder();
+void ho_append();
+void ho_display();
+void ho_del();
+void ho_ser();
+void loding2();
+void ho_ser_name();
+void ho_ser_addhar();
+void ho_ser_acno();
+void ho_ser_date();
+void ho_ser_dob();
+void ho_ser_phone();
+void ho_modify();
+void ho_modiname();
+void ho_modiaddress();
+void ho_modifname();
+void ho_modimobile();
+void ho_modiactype();
+void ho_modidob();
+void ho_sortname();
+void recet_ho();
+//void money();
+void widra();
+//void depo();
+//----------------------
+void employ();
+void appendemploy();
+void displayemploy();
+void delemploy();
+void recetemp();
+void empser();
+void employsearch_name();
+void employsearch_addhar();
+void employsearch_poname();
+void employsearch_pain();
+void employsearch_dob();
+void employsearch_mobile();
+void empmodi();
+void empmodi_fname();
+void empmodi_name();
+void empmodi_address();
+void empmodi_mob();
+void empmodi_post();
+void empmodi_dob();
+void empmodi_salary();
+FILE *fp,*ftemp,*fb,*fps;
+long si=sizeof(s);
+long bi=sizeof(b);
+int pi=sizeof(p);
+int mh=1,ch,ch1,one,n=0;
+void main()
+{
+clrscr();
+if(n==0)
+{
+//textbackground(BLACK);
+one=singhin();
+if(one!=1)
+{
+clrscr();
+gotoxy(15,12);
+cprintf("YOU HAVE ENTER NOT VALIED USER NAME OR PASSWORD");
+getch();
+exit(0); }
+getch();
+loding2();
+clrscr();
+n++;
+}
+
+clrscr();
+textbackground(CYAN);
+int p,i,key=9;
+char menu[5][35]={
+		 {"BANK HOLDER DETAIL       "},
+		 {"BANK EMPLOY DETAIL       "},
+		 {"DELETE ON EMPLOY         "},
+		 {"SINGH-IN(SET)THE PASSWORD"},
+		 {"        EXIT             "}
+		 };
+gotoxy(20,3);
+textcolor(10);
+cprintf("********************************************");
+gotoxy(20,5);
+textcolor(6);
+cprintf("|   WELCOME TO STATE BANK OF INDIA(S.B.I)  |");
+gotoxy(20,7);
+textcolor(10);
+cprintf("********************************************");
+textcolor(RED+BLINK);
+textbackground(YELLOW);
+gotoxy(25,23);
+cprintf("PRESS ENTER FOR SELECT MENU");
+textcolor(WHITE+BLINK);
+textbackground(RED);
+gotoxy(5,1);
+cprintf("TODAY DATE");
+textcolor(WHITE+BLINK);
+textbackground(RED);
+gotoxy(66,1);
+cprintf("CURRENT TIME");
+
+textcolor(RED);
+textbackground(WHITE);
+gotoxy(5,3);
+cprintf("%s",__DATE__);
+textcolor(RED);
+textbackground(WHITE);
+gotoxy(67,3);
+cprintf("%s",__TIME__);
+
+textbackground(CYAN);
+for(i=0;i<5;i++)
+{
+p=10;
+gotoxy(30,p+i);
+textcolor(BLACK);
+cprintf("\n%s",menu[i]);
+}
+i=5;
+do
+{
+if(i==5)
+{
+i--;
+textbackground(BLUE);
+textcolor(RED);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+}
+key=getch();
+if(key==72&&i>=1)
+{
+textbackground(CYAN);
+textcolor(WHITE);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+i--;
+textbackground(BLUE);
+textcolor(RED);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+}
+if(key==80&&i<=3)
+{
+textbackground(CYAN);
+textcolor(BLACK);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+i++;
+textbackground(WHITE);
+textcolor(BLACK);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+}
+
+if(key==13&&i==4)
+{
+exit(0);
+break;
+}
+if(key==13&&i==3)
+{
+textbackground(CYAN);
+singhup();
+break;
+}
+if(key==13&&i==2)
+{
+main();
+break;
+}
+if(key==13&&i==1)
+{
+textbackground(CYAN);
+employ();
+getch();
+main();
+}
+if(key==13&&i==0)
+{
+textbackground(CYAN);
+holder();
+getch();
+main();
+}
+}while(key!=27);
+}
+void employ()
+{
+clrscr();
+int p,i,key=9;
+char menu[7][35]={
+		 {"INSERT  ON EMPLOY DETAIL   "},
+		 {"DISPLAY ON EMPLOY DETAIL   "},
+		 {"DELETE  ON EMPLOY DETAIL   "},
+		 {"SEARCH  ON EMPLOY DETAIL   "},
+		 {"MODIFY  OF EMPLOY DETAIL   "},
+		 {"    RECETE FULLY  DATA     "},
+		 {"        MAIN MENU          "}
+		 };
+gotoxy(20,3);
+textcolor(RED);
+cprintf("***************************************");
+gotoxy(20,5);
+cprintf("|      FULLY EMPLOYE INFORMANTON      |");
+gotoxy(20,7);
+cprintf("***************************************");
+textcolor(RED+BLINK);
+textbackground(YELLOW);
+gotoxy(25,23);
+cprintf("PRESS ENTER FOR SELECT MENU");
+textcolor(WHITE+BLINK);
+textbackground(RED);
+gotoxy(5,1);
+cprintf("TODAY DATE");
+textcolor(WHITE+BLINK);
+textbackground(RED);
+gotoxy(66,1);
+cprintf("CURRENT TIME");
+
+textcolor(RED);
+textbackground(WHITE);
+gotoxy(5,3);
+cprintf("%s",__DATE__);
+textcolor(RED);
+textbackground(WHITE);
+gotoxy(67,3);
+cprintf("%s",__TIME__);
+
+textbackground(CYAN);
+for(i=0;i<7;i++)
+{
+p=10;
+gotoxy(30,p+i);
+textcolor(BLACK);
+cprintf("\n%s",menu[i]);
+}
+i=7;
+do
+{
+if(i==7)
+{
+i--;
+textbackground(BLUE);
+textcolor(RED);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+}
+key=getch();
+if(key==72&&i>=1)
+{
+textbackground(CYAN);
+textcolor(WHITE);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+i--;
+textbackground(BLUE);
+textcolor(RED);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+}
+if(key==80&&i<=5)
+{
+textbackground(CYAN);
+textcolor(BLACK);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+i++;
+textbackground(WHITE);
+textcolor(BLACK);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+}
+if(key==13&&i==6)
+{
+textcolor(RED);
+textbackground(CYAN);
+main();
+break;
+}
+if(key==13&&i==5)
+{
+textcolor(RED);
+textbackground(CYAN);
+recetemp();
+break;
+}
+if(key==13&&i==4)
+{
+textcolor(RED);
+textbackground(CYAN);
+empmodi();
+break;
+}
+if(key==13&&i==3)
+{
+textbackground(CYAN);
+empser();
+break;
+}
+if(key==13&&i==2)
+{
+textbackground(CYAN);
+delemploy();
+break;
+}
+if(key==13&&i==1)
+{
+textbackground(CYAN);
+displayemploy();
+break;
+}
+if(key==13&&i==0)
+{
+textbackground(CYAN);
+appendemploy();
+break;
+}
+}while(key!=27);
+}
+
+//*******************(employ function defination)************************
+void appendemploy()
+{
+int i,k=0 ,z,h,l,l1,x,mh1=1;
+char mob[15],tmp[15],add[20],addd[20];
+//clrscr();
+textbackground(CYAN);
+fb=fopen("bank_employ.txt","ab");
+while(mh1==1)
+{
+clrscr();
+{
+if(k==0)
+{
+//textbackground(CYAN);
+//textcolor(RED);
+gotoxy(2,5);
+printf("ENTER EMPLOY NAME     :==========>");
+gotoxy(2,8);
+printf("ENTER EMPLOY STATUS/POST :==========>");
+gotoxy(2,11);
+printf("ENTER EMPLOY SALARY :============>");
+gotoxy(2,14);
+printf("ENTER EMPLOY ADDHAR:==============>");
+gotoxy(2,17);
+printf("ENTER D.O.B IN FROM OF 00/00/0000:=======>");
+}
+else
+{
+z:
+clrscr();
+//textbackground(CYAN);
+//textcolor(RED);
+gotoxy(2,5);
+printf("ENTER EMPLOY  F,NAME:============>");
+gotoxy(2,8);
+printf("ENTER EMPLOY PAIN-NO :===========>");
+gotoxy(2,11);
+printf("ENTER EMPLOY ADDRESS :==========>");
+gotoxy(2,14);
+printf("ENTER EMPLOY MOBILE NO :========>");
+gotoxy(2,17);
+printf("ENTER EMPLOY JOINING DATE00/00/0000:=>");
+}
+}
+
+//----------------
+gotoxy(40,4);
+cprintf("%c",TLC);
+gotoxy(70,4);
+cprintf("%c",TRC);
+gotoxy(40,6);
+cprintf("%c",BLC);
+gotoxy(70,6);
+cprintf("%c",BRC);
+for(i=41;i<=69;i++)
+{
+gotoxy(i,4);
+cprintf("%c",HRL);
+gotoxy(i,6);
+cprintf("%c",HRL);
+}
+gotoxy(40,5);
+cprintf("%c",VRL);
+gotoxy(70,5);
+cprintf("%c",VRL);
+//----------
+gotoxy(40,7);
+cprintf("%c",TLC);
+gotoxy(70,7);
+cprintf("%c",TRC);
+gotoxy(40,9);
+cprintf("%c",BLC);
+gotoxy(70,9);
+cprintf("%c",BRC);
+for(i=41;i<=69;i++)
+{
+gotoxy(i,7);
+cprintf("%c",HRL);
+gotoxy(i,9);
+cprintf("%c",HRL);
+}
+gotoxy(40,8);
+cprintf("%c",VRL);
+gotoxy(70,8);
+cprintf("%c",VRL);
+//----------------
+gotoxy(40,10);
+cprintf("%c",TLC);
+gotoxy(70,10);
+cprintf("%c",TRC);
+gotoxy(40,12);
+cprintf("%c",BLC);
+gotoxy(70,12);
+cprintf("%c",BRC);
+for(i=41;i<=69;i++)
+{
+gotoxy(i,10);
+cprintf("%c",HRL);
+gotoxy(i,12);
+cprintf("%c",HRL);
+}
+gotoxy(40,11);
+cprintf("%c",VRL);
+gotoxy(70,11);
+cprintf("%c",VRL);
+//----------------
+gotoxy(40,13);
+cprintf("%c",TLC);
+gotoxy(70,13);
+cprintf("%c",TRC);
+gotoxy(40,15);
+cprintf("%c",BLC);
+gotoxy(70,15);
+cprintf("%c",BRC);
+for(i=41;i<=69;i++)
+{
+gotoxy(i,13);
+cprintf("%c",HRL);
+gotoxy(i,15);
+cprintf("%c",HRL);
+}
+gotoxy(40,14);
+cprintf("%c",VRL);
+gotoxy(70,14);
+cprintf("%c",VRL);
+//----------------
+gotoxy(45,16);
+cprintf("%c",TLC);
+gotoxy(60,16);
+cprintf("%c",TRC);
+gotoxy(45,18);
+cprintf("%c",BLC);
+gotoxy(60,18);
+cprintf("%c",BRC);
+for(i=46;i<=59;i++)
+{
+gotoxy(i,16);
+cprintf("%c",HRL);
+gotoxy(i,18);
+cprintf("%c",HRL);
+}
+gotoxy(45,17);
+cprintf("%c",VRL);
+gotoxy(60,17);
+cprintf("%c",VRL);
+//-----------------
+if(k==0)
+{
+textbackground(CYAN);
+textcolor(YELLOW);
+fflush(stdin);
+gotoxy(42,5);
+gets(b.employ_name);
+gotoxy(42,8);
+cscanf("%s",b.employ_post);
+gotoxy(42,11);
+cscanf("%ld",&b.employ_salary);
+x:
+gotoxy(42,14);
+cscanf("%s",add);
+l1=strlen(add);
+if(l1==12)
+strcpy(b.employ_addhar,add);
+else
+{
+gotoxy(3,15);
+cprintf("plese insert 12 degite addhar no");
+strcpy(addd,add);
+goto x;
+}
+gotoxy(47,17);
+cscanf("%s",b.employ_dob);
+//------------------
+k=1;
+goto z;
+}
+else
+{
+textcolor(YELLOW);
+textbackground(CYAN);
+fflush(stdin);
+gotoxy(43,5);
+gets(b.employ_fname);
+gotoxy(43,8);
+cscanf("%s",b.employ_pain);
+fflush(stdin);
+gotoxy(43,11);
+gets(b.employ_address);
+h:
+gotoxy(43,14);
+cscanf("%s",mob);
+l=strlen(mob);
+if(l==10)
+strcpy(b.employ_mob,mob);
+else
+{gotoxy(2,15);
+cprintf("plese enter 10 digite mobile no");
+strcpy(tmp,mob);
+goto h;}
+gotoxy(48,17);
+cprintf("%s",__DATE__);
+strcpy(b.employ_dog,__DATE__);
+k=0;
+}
+fwrite(&b,sizeof(b),1,fb);
+gotoxy(2,20);
+printf("want to continue press [1]====>");
+gotoxy(45,19);
+cprintf("%c",TLC);
+gotoxy(48,19);
+cprintf("%c",TRC);
+gotoxy(45,21);
+cprintf("%c",BLC);
+gotoxy(48,21);
+cprintf("%c",BRC);
+for(i=46;i<=47;i++)
+{
+gotoxy(i,19);
+cprintf("%c",HRL);
+gotoxy(i,21);
+cprintf("%c",HRL);
+}
+gotoxy(45,20);
+cprintf("%c",VRL);
+gotoxy(48,20);
+cprintf("%c",VRL);
+gotoxy(47,20);
+scanf("%d",&mh1);
+//fclose(fb);
+}
+fclose(fb);
+//getch();
+}
+void displayemploy()
+{
+int i=5;
+clrscr();
+fb=fopen("bank_employ.txt","rb");
+textcolor(GREEN);
+textbackground(WHITE);
+gotoxy(1,3);
+cprintf("EMPLOY-NAME");
+gotoxy(18,3);
+cprintf("EMP-POST");
+gotoxy(30,3);
+cprintf("EMP-SALARY");
+gotoxy(45,3);
+cprintf("EMP-ADDHAR");
+gotoxy(58,3);
+cprintf("MOBILE-NO");
+gotoxy(70,3);
+
+cprintf("EMP-D.O.G");
+printf("\n------------------------------------------------------------------------------\n");
+while(fread(&b,sizeof(b),1,fb)==1)
+{
+textcolor(BLACK);
+gotoxy(1,i);
+printf("%s",b.employ_name);
+gotoxy(18,i);
+printf("%s",b.employ_post);
+gotoxy(30,i);
+printf("%ld",b.employ_salary);
+gotoxy(45,i);
+printf("%s",b.employ_addhar);
+gotoxy(58,i);
+printf("%s",b.employ_mob);
+gotoxy(70,i);
+printf("%s",b.employ_dog);
+i++;
+}
+printf("\n--------------------------------------------------------------------------------\n");
+printf("\n");
+fclose(fb);
+}
+void delemploy()
+{
+clrscr();
+int f=0;
+char no[15];
+fb=fopen("bank_employ.txt","rb");
+printf("ENTER ADDHAR NO FOR DELETION :-");
+scanf("%s",no);
+ftemp=fopen("gholder.txt","wb");
+while(fread(&b,sizeof(b),1,fb)==1)
+{
+if(strcmpi(b.employ_addhar,no)!=0)
+fwrite(&b,sizeof(b),1,ftemp);
+else
+f=1;
+}
+fclose(fb);
+fclose(ftemp);
+remove("bank_employ.txt");
+rename("gholder.txt","bank_employ.txt");
+if(f==0)
+printf("%s ADDHAR N0 HAS NOT EXIST ON THE BANK EMPLOY",no);
+else
+printf(" ADDHAR NO:-%s HAS QUITE HIS JOB",no);
+}
+
+void empser()
+{
+clrscr();
+int p,i,key=9;
+char menu[8][40]={
+		 {"SEARCHING ON EMPLOY NAME         "},
+		 {"SEARCHING ON EMPLOY ADDHAR NO    "},
+		 {"SEARCHING ON EMPLOY POST NAME    "},
+		 {"SEARCHING ON EMPLOY PAIN NO      "},
+		 {"SEARCHING ON EMPLOY DATE OF BIRTH"},
+		 {"SEARCHING ON EMPLOY MOBILE NO    "},
+		 {"         PREVIOUS MENU           "},
+		 {"          MAIN MENU              "}
+		 };
+gotoxy(20,3);
+textcolor(RED);
+cprintf("***************************************");
+gotoxy(20,4);
+cprintf("|  EMPLOY SEARCHING ALL INFORMANTON   |");
+gotoxy(20,5);
+cprintf("***************************************");
+
+textbackground(CYAN);
+for(i=0;i<8;i++)
+{
+p=10;
+gotoxy(30,p+i);
+textcolor(BLACK);
+cprintf("\n%s",menu[i]);
+}
+i=8;
+do
+{
+if(i==8)
+{
+i--;
+textbackground(BLUE);
+textcolor(RED);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+}
+key=getch();
+if(key==72&&i>=1)
+{
+textbackground(CYAN);
+textcolor(WHITE);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+i--;
+textbackground(BLUE);
+textcolor(RED);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+}
+if(key==80&&i<=6)
+{
+textbackground(CYAN);
+textcolor(BLACK);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+i++;
+textbackground(WHITE);
+textcolor(BLACK);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+}
+textcolor(RED);
+textbackground(YELLOW);
+gotoxy(25,24);
+cprintf("press enter for select");
+if(key==13&&i==7)
+{
+main();
+}
+if(key==13&&i==6)
+{
+empser();
+}
+if(key==13&&i==5)
+{
+textbackground(WHITE);
+employsearch_mobile();
+getch();
+empser();
+}
+if(key==13&&i==4)
+{
+textbackground(WHITE);
+employsearch_dob();
+getch();
+empser();
+}
+if(key==13&&i==3)
+{
+textbackground(WHITE);
+employsearch_pain();
+getch();
+empser();
+}
+if(key==13&&i==2)
+{
+textbackground(WHITE);
+employsearch_poname();
+getch();
+empser();
+}
+if(key==13&&i==1)
+{
+textbackground(WHITE);
+employsearch_addhar();
+getch();
+empser();
+}
+if(key==13&&i==0)
+{
+textbackground(WHITE);
+employsearch_name();
+getch();
+empser();
+}
+}while(key!=27);
+}
+ void employsearch_name()
+ {
+ clrscr();
+ int p=0,p1=0,y=5,x=11;
+ char tmpname[30];
+ fflush(stdin);
+ printf("enter name has to be search\n");
+ gets(tmpname);
+ fb=fopen("bank_employ.txt","rb");
+if(p==0)
+{
+//textcolor(BLUE);
+gotoxy(1,4);
+cprintf("EMPLOY-NAME");
+gotoxy(18,4);
+cprintf("EMP-POST/STATUS");
+gotoxy(38,4);
+cprintf("EMP-SALARY");
+gotoxy(50,4);
+cprintf("EMP-ADDHAR");
+gotoxy(68,4);
+cprintf("EMP-D.O.B");
+gotoxy(1,10);
+cprintf("E.M.P-F'NAME");
+gotoxy(15,10);
+cprintf("EMP-PAIN-NO");
+gotoxy(30,10);
+cprintf("EMP-ADDRESS");
+gotoxy(45,10);
+cprintf("EMP-MOBILE-NO");
+gotoxy(60,10);
+cprintf("EMP-D.O.G");
+
+p=1;
+}
+while(fread(&b,sizeof(b),1,fb)==1)
+if(strcmpi(tmpname,b.employ_name)==0)
+{
+textcolor(YELLOW);
+gotoxy(1,y);
+printf("%s",b.employ_name);
+gotoxy(18,y);
+printf("%s",b.employ_post);
+gotoxy(38,y);
+printf("%ld",b.employ_salary);
+gotoxy(50,y);
+printf("%s",b.employ_addhar);
+gotoxy(68,y);
+printf("%s",b.employ_dob);
+p1=1;
+y++;
+gotoxy(1,x);
+printf("%s",b.employ_fname);
+gotoxy(15,x);
+printf("%s",b.employ_pain);
+gotoxy(30,x);
+printf("%s",b.employ_address);
+gotoxy(45,x);
+printf("%s",b.employ_mob);
+gotoxy(60,x);
+printf("%ld",b.employ_dog);
+x++;
+}
+if(p1==0)
+{
+gotoxy(25,20);
+cprintf("NAME NOT FOUND\n");
+}
+else{
+gotoxy(25,20);
+y=y-5;
+cprintf("%d DATA PRESENT IN HE FILE\n",y);
+}
+fclose(fb);
+}
+void employsearch_addhar()
+ {
+ clrscr();
+ int p=0,p1=0,y=5,x=11;
+ char tmpname[30];
+ fflush(stdin);
+ printf("Enter addhar no has to be search\n");
+ scanf("%s",tmpname);
+ fb=fopen("bank_employ.txt","rb");
+if(p==0)
+{
+//textcolor(BLUE);
+gotoxy(1,4);
+cprintf("EMPLOY-NAME");
+gotoxy(18,4);
+cprintf("EMP-POST/STATUS");
+gotoxy(38,4);
+cprintf("EMP-SALARY");
+gotoxy(50,4);
+cprintf("EMP-ADDHAR");
+gotoxy(68,4);
+cprintf("EMP-D.O.B");
+gotoxy(1,10);
+cprintf("E.M.P-F'NAME");
+gotoxy(15,10);
+cprintf("EMP-PAIN-NO");
+gotoxy(30,10);
+cprintf("EMP-ADDRESS");
+gotoxy(45,10);
+cprintf("EMP-MOBILE-NO");
+gotoxy(60,10);
+cprintf("EMP-D.O.G");
+
+p=1;
+}
+while(fread(&b,sizeof(b),1,fb)==1)
+if(strcmpi(tmpname,b.employ_addhar)==0)
+{
+textcolor(YELLOW);
+gotoxy(1,y);
+printf("%s",b.employ_name);
+gotoxy(18,y);
+printf("%s",b.employ_post);
+gotoxy(38,y);
+printf("%ld",b.employ_salary);
+gotoxy(50,y);
+printf("%s",b.employ_addhar);
+gotoxy(68,y);
+printf("%s",b.employ_dob);
+p1=1;
+y++;
+gotoxy(1,x);
+printf("%s",b.employ_fname);
+gotoxy(15,x);
+printf("%s",b.employ_pain);
+gotoxy(30,x);
+printf("%s",b.employ_address);
+gotoxy(45,x);
+printf("%s",b.employ_mob);
+gotoxy(60,x);
+printf("%ld",b.employ_dog);
+x++;
+}
+if(p1==0)
+{
+gotoxy(25,20);
+cprintf("ADDHAR NO NOT FOUND\n");
+}
+else{
+gotoxy(25,20);
+y=y-5;
+cprintf("%d DATA PRESENT IN HE FILE\n",y);
+}
+fclose(fb);
+}
+void employsearch_poname()
+ {
+ clrscr();
+ int p=0,p1=0,y=5,x=11;
+ char tmpname[30];
+ fflush(stdin);
+ printf("Enter post name has to be search\n");
+ gets(tmpname);
+ fb=fopen("bank_employ.txt","rb");
+if(p==0)
+{
+//textcolor(BLUE);
+gotoxy(1,4);
+cprintf("EMPLOY-NAME");
+gotoxy(18,4);
+cprintf("EMP-POST/STATUS");
+gotoxy(38,4);
+cprintf("EMP-SALARY");
+gotoxy(50,4);
+cprintf("EMP-ADDHAR");
+gotoxy(68,4);
+cprintf("EMP-D.O.B");
+gotoxy(1,10);
+cprintf("E.M.P-F'NAME");
+gotoxy(15,10);
+cprintf("EMP-PAIN-NO");
+gotoxy(30,10);
+cprintf("EMP-ADDRESS");
+gotoxy(45,10);
+cprintf("EMP-MOBILE-NO");
+gotoxy(60,10);
+cprintf("EMP-D.O.G");
+
+p=1;
+}
+while(fread(&b,sizeof(b),1,fb)==1)
+if(strcmpi(tmpname,b.employ_post)==0)
+{
+textcolor(YELLOW);
+gotoxy(1,y);
+printf("%s",b.employ_name);
+gotoxy(18,y);
+printf("%s",b.employ_post);
+gotoxy(38,y);
+printf("%ld",b.employ_salary);
+gotoxy(50,y);
+printf("%s",b.employ_addhar);
+gotoxy(68,y);
+printf("%s",b.employ_dob);
+p1=1;
+y++;
+gotoxy(1,x);
+printf("%s",b.employ_fname);
+gotoxy(15,x);
+printf("%s",b.employ_pain);
+gotoxy(30,x);
+printf("%s",b.employ_address);
+gotoxy(45,x);
+printf("%s",b.employ_mob);
+gotoxy(60,x);
+printf("%ld",b.employ_dog);
+x++;
+}
+if(p1==0)
+{
+gotoxy(25,20);
+cprintf("THIS POST NO AVELAVLE ANY EMOLOYE\n");
+}
+else{
+gotoxy(25,20);
+y=y-5;
+cprintf("%d DATA PRESENT IN THE FILE\n",y);
+}
+fclose(fb);
+}
+void employsearch_pain()
+ {
+ clrscr();
+ int p=0,p1=0,y=5,x=11;
+ char tmpname[30];
+ fflush(stdin);
+ printf("Enter pain no has to be search\n");
+ gets(tmpname);
+ fb=fopen("bank_employ.txt","rb");
+if(p==0)
+{
+//textcolor(BLUE);
+gotoxy(1,4);
+cprintf("EMPLOY-NAME");
+gotoxy(18,4);
+cprintf("EMP-POST/STATUS");
+gotoxy(38,4);
+cprintf("EMP-SALARY");
+gotoxy(50,4);
+cprintf("EMP-ADDHAR");
+gotoxy(68,4);
+cprintf("EMP-D.O.B");
+gotoxy(1,10);
+cprintf("E.M.P-F'NAME");
+gotoxy(15,10);
+cprintf("EMP-PAIN-NO");
+gotoxy(30,10);
+cprintf("EMP-ADDRESS");
+gotoxy(45,10);
+cprintf("EMP-MOBILE-NO");
+gotoxy(60,10);
+cprintf("EMP-D.O.G");
+
+p=1;
+}
+while(fread(&b,sizeof(b),1,fb)==1)
+if(strcmpi(tmpname,b.employ_pain)==0)
+{
+textcolor(YELLOW);
+gotoxy(1,y);
+printf("%s",b.employ_name);
+gotoxy(18,y);
+printf("%s",b.employ_post);
+gotoxy(38,y);
+printf("%ld",b.employ_salary);
+gotoxy(50,y);
+printf("%s",b.employ_addhar);
+gotoxy(68,y);
+printf("%s",b.employ_dob);
+p1=1;
+y++;
+gotoxy(1,x);
+printf("%s",b.employ_fname);
+gotoxy(15,x);
+printf("%s",b.employ_pain);
+gotoxy(30,x);
+printf("%s",b.employ_address);
+gotoxy(45,x);
+printf("%s",b.employ_mob);
+gotoxy(60,x);
+printf("%ld",b.employ_dog);
+x++;
+}
+if(p1==0)
+{
+gotoxy(25,20);
+cprintf("THIS DATA IS NOT AVELABLE\n");
+}
+else{
+gotoxy(25,20);
+y=y-5;
+cprintf("%d DATA PRESENT IN THE FILE\n",y);
+}
+fclose(fb);
+}
+void employsearch_dob()
+ {
+ clrscr();
+ int p=0,p1=0,y=5,x=11;
+ char tmpname[30];
+ fflush(stdin);
+ printf("Enter date of birth has to be search\n");
+ gets(tmpname);
+ fb=fopen("bank_employ.txt","rb");
+if(p==0)
+{
+//textcolor(BLUE);
+gotoxy(1,4);
+cprintf("EMPLOY-NAME");
+gotoxy(18,4);
+cprintf("EMP-POST/STATUS");
+gotoxy(38,4);
+cprintf("EMP-SALARY");
+gotoxy(50,4);
+cprintf("EMP-ADDHAR");
+gotoxy(68,4);
+cprintf("EMP-D.O.B");
+gotoxy(1,10);
+cprintf("E.M.P-F'NAME");
+gotoxy(15,10);
+cprintf("EMP-PAIN-NO");
+gotoxy(30,10);
+cprintf("EMP-ADDRESS");
+gotoxy(45,10);
+cprintf("EMP-MOBILE-NO");
+gotoxy(60,10);
+cprintf("EMP-D.O.G");
+
+p=1;
+}
+while(fread(&b,sizeof(b),1,fb)==1)
+if(strcmpi(tmpname,b.employ_dob)==0)
+{
+textcolor(YELLOW);
+gotoxy(1,y);
+printf("%s",b.employ_name);
+gotoxy(18,y);
+printf("%s",b.employ_post);
+gotoxy(38,y);
+printf("%ld",b.employ_salary);
+gotoxy(50,y);
+printf("%s",b.employ_addhar);
+gotoxy(68,y);
+printf("%s",b.employ_dob);
+p1=1;
+y++;
+gotoxy(1,x);
+printf("%s",b.employ_fname);
+gotoxy(15,x);
+printf("%s",b.employ_pain);
+gotoxy(30,x);
+printf("%s",b.employ_address);
+gotoxy(45,x);
+printf("%s",b.employ_mob);
+gotoxy(60,x);
+printf("%ld",b.employ_dog);
+x++;
+}
+if(p1==0)
+{
+gotoxy(25,20);
+cprintf("THIS DATE OF BIRTH HAS NO ANY EMOLOYE\n");
+}
+else{
+gotoxy(25,20);
+y=y-5;
+cprintf("%d DATA PRESENT IN THE FILE\n",y);
+}
+fclose(fb);
+}
+void employsearch_mobile()
+ {
+ clrscr();
+ int p=0,p1=0,y=5,x=11;
+ char tmpname[30];
+ fflush(stdin);
+ printf("Enter mobile no has to be search\n");
+ gets(tmpname);
+ fb=fopen("bank_employ.txt","rb");
+if(p==0)
+{
+//textcolor(BLUE);
+gotoxy(1,4);
+cprintf("EMPLOY-NAME");
+gotoxy(18,4);
+cprintf("EMP-POST/STATUS");
+gotoxy(38,4);
+cprintf("EMP-SALARY");
+gotoxy(50,4);
+cprintf("EMP-ADDHAR");
+gotoxy(68,4);
+cprintf("EMP-D.O.B");
+gotoxy(1,10);
+cprintf("E.M.P-F'NAME");
+gotoxy(15,10);
+cprintf("EMP-PAIN-NO");
+gotoxy(30,10);
+cprintf("EMP-ADDRESS");
+gotoxy(45,10);
+cprintf("EMP-MOBILE-NO");
+gotoxy(60,10);
+cprintf("EMP-D.O.G");
+
+p=1;
+}
+while(fread(&b,sizeof(b),1,fb)==1)
+if(strcmpi(tmpname,b.employ_mob)==0)
+{
+textcolor(YELLOW);
+gotoxy(1,y);
+printf("%s",b.employ_name);
+gotoxy(18,y);
+printf("%s",b.employ_post);
+gotoxy(38,y);
+printf("%ld",b.employ_salary);
+gotoxy(50,y);
+printf("%s",b.employ_addhar);
+gotoxy(68,y);
+printf("%s",b.employ_dob);
+p1=1;
+y++;
+gotoxy(1,x);
+printf("%s",b.employ_fname);
+gotoxy(15,x);
+printf("%s",b.employ_pain);
+gotoxy(30,x);
+printf("%s",b.employ_address);
+gotoxy(45,x);
+printf("%s",b.employ_mob);
+gotoxy(60,x);
+printf("%ld",b.employ_dog);
+x++;
+}
+if(p1==0)
+{
+gotoxy(25,20);
+cprintf("THIS MOBILE NO HAS BEEN NO AVELAVLE ANY EMOLOYE\n");
+}
+else{
+gotoxy(25,20);
+y=y-5;
+cprintf("%d DATA PRESENT IN THE FILE\n",y);
+}
+fclose(fb);
+}
+void empmodi()
+{
+clrscr();
+int p,i,key=9;
+char menu[8][31]={
+		 {"MODIFICATION ON NAME          "},
+		 {"MODIFICATION ON ADDRESS       "},
+		 {"MODIFICATION ON FATHER'S NAME "},
+		 {"MODIFICATION ON MOBILE-NO     "},
+		 {"MODIFICATION ON POST          "},
+		 {"MODIFICATION ON D.O.B         "},
+		 {"MODIFICATION ON SALARY        "},
+		 {" GO TO PREVIOUS MENU          "}
+		 };
+gotoxy(20,3);
+textcolor(RED);
+cprintf("****************************************");
+gotoxy(20,5);
+cprintf("|   FULLY ACAUNT HOLDER MODIFICATION   |");
+gotoxy(20,7);
+cprintf("****************************************");
+textcolor(RED+BLINK);
+textbackground(YELLOW);
+gotoxy(25,23);
+cprintf("PERSS ENTER FOR SELECT MENU");
+textcolor(WHITE+BLINK);
+textbackground(RED);
+gotoxy(5,1);
+cprintf("TODAY DATE");
+textcolor(WHITE+BLINK);
+textbackground(RED);
+gotoxy(66,1);
+cprintf("CURRENT TIME");
+
+textcolor(RED);
+textbackground(WHITE);
+gotoxy(5,3);
+cprintf("%s",__DATE__);
+textcolor(RED);
+textbackground(WHITE);
+gotoxy(67,3);
+cprintf("%s",__TIME__);
+
+textbackground(CYAN);
+for(i=0;i<8;i++)
+{
+p=10;
+gotoxy(30,p+i);
+textcolor(BLACK);
+cprintf("\n%s",menu[i]);
+}
+i=8;
+do
+{
+if(i==8)
+{
+i--;
+textbackground(BLUE);
+textcolor(RED);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+}
+key=getch();
+if(key==72&&i>=1)
+{
+textbackground(CYAN);
+textcolor(WHITE);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+i--;
+textbackground(BLUE);
+textcolor(RED);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+}
+if(key==80&&i<=6)
+{
+textbackground(CYAN);
+textcolor(BLACK);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+i++;
+textbackground(WHITE);
+textcolor(BLACK);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+}
+if(key==13&&i==7)
+{
+employ();
+}
+if(key==13&&i==6)
+{
+//empmodi_salary();
+getch();
+empmodi();
+}
+if(key==13&&i==5)
+{
+empmodi_dob();
+getch();
+empmodi();
+}
+if(key==13&&i==4)
+{
+empmodi_post();
+getch();
+empmodi();
+}
+if(key==13&&i==3)
+{
+empmodi_mob();
+getch();
+empmodi();
+}
+if(key==13&&i==2)
+{
+empmodi_fname();
+getch();
+empmodi();
+}
+if(key==13&&i==1)
+{
+empmodi_address();
+getch();
+empmodi();
+}
+if(key==13&&i==0)
+{
+empmodi_name();
+getch();
+empmodi();
+}
+}while(key!=27);
+}
+void empmodi_name()
+{
+clrscr();
+ int k=0,i;
+ char tmpname[25];
+ char na[20];
+ gotoxy(15,1);
+ printf("<<***MODIFICATION ON NAME***>>");
+ gotoxy(3,4);
+ printf("ENTER ADDHAR NO FOR MODIFY :-");
+ textcolor(GREEN);
+gotoxy(35,3);
+cprintf("%c",TLC);
+gotoxy(65,3);
+cprintf("%c",TRC);
+gotoxy(35,5);
+cprintf("%c",BLC);
+gotoxy(65,5);
+cprintf("%c",BRC);
+for(i=36;i<=64;i++)
+{
+gotoxy(i,3);
+cprintf("%c",HRL);
+gotoxy(i,5);
+cprintf("%c",HRL);
+}
+gotoxy(35,4);
+cprintf("%c",VRL);
+gotoxy(65,4);
+cprintf("%c",VRL);
+gotoxy(37,4);
+scanf("%s",tmpname);
+ fb=fopen("bank_employ.txt","rb+");
+
+while(fread(&b,sizeof(b),1,fb)==1)
+{
+if(strcmpi(tmpname,b.employ_addhar)==0)
+{
+gotoxy(8,7);
+printf("ENTER NEW NAME:->");
+gotoxy(35,6);
+cprintf("%c",TLC);
+gotoxy(65,6);
+cprintf("%c",TRC);
+gotoxy(35,8);
+cprintf("%c",BLC);
+gotoxy(65,8);
+cprintf("%c",BRC);
+for(i=36;i<=64;i++)
+{
+gotoxy(i,6);
+cprintf("%c",HRL);
+gotoxy(i,8);
+cprintf("%c",HRL);
+}
+gotoxy(35,7);
+cprintf("%c",VRL);
+gotoxy(65,7);
+cprintf("%c",VRL);
+gotoxy(37,7);
+fflush(stdin);
+gets(b.employ_name);
+strcpy(na,s.ho_name);
+fseek(fb,-bi,1);
+fwrite(&b,sizeof(b),1,fb);
+k=1;
+break;
+}
+}
+if(k==0)
+{
+gotoxy(25,20);
+cprintf("%s ADDHAR NUMBER NOT FOUND\n",tmpname);
+}
+else{
+gotoxy(25,20);
+cprintf("%s SUCCESSFILLY MODIYFYED\n",na);
+}
+fclose(fb);
+}
+void empmodi_address()
+{
+clrscr();
+ int k=0,i;
+ char tmpname[25];
+ char na[20];
+ gotoxy(15,1);
+ printf("<<***MODIFICATION ON NAME***>>");
+ gotoxy(3,4);
+ printf("ENTER ADDHAR NO FOR MODIFY :-");
+ textcolor(GREEN);
+gotoxy(35,3);
+cprintf("%c",TLC);
+gotoxy(65,3);
+cprintf("%c",TRC);
+gotoxy(35,5);
+cprintf("%c",BLC);
+gotoxy(65,5);
+cprintf("%c",BRC);
+for(i=36;i<=64;i++)
+{
+gotoxy(i,3);
+cprintf("%c",HRL);
+gotoxy(i,5);
+cprintf("%c",HRL);
+}
+gotoxy(35,4);
+cprintf("%c",VRL);
+gotoxy(65,4);
+cprintf("%c",VRL);
+gotoxy(37,4);
+scanf("%s",tmpname);
+ fb=fopen("bank_employ.txt","rb+");
+
+while(fread(&b,sizeof(b),1,fb)==1)
+{
+if(strcmpi(tmpname,b.employ_addhar)==0)
+{
+gotoxy(8,7);
+printf("ENTER NEW ADDRESS:->");
+gotoxy(35,6);
+cprintf("%c",TLC);
+gotoxy(65,6);
+cprintf("%c",TRC);
+gotoxy(35,8);
+cprintf("%c",BLC);
+gotoxy(65,8);
+cprintf("%c",BRC);
+for(i=36;i<=64;i++)
+{
+gotoxy(i,6);
+cprintf("%c",HRL);
+gotoxy(i,8);
+cprintf("%c",HRL);
+}
+gotoxy(35,7);
+cprintf("%c",VRL);
+gotoxy(65,7);
+cprintf("%c",VRL);
+gotoxy(37,7);
+fflush(stdin);
+gets(b.employ_address);
+fseek(fb,-bi,1);
+strcpy(na,s.ho_address);
+fwrite(&b,sizeof(b),1,fb);
+k=1;
+break;
+}
+}
+if(k==0)
+{
+gotoxy(25,20);
+cprintf("%s ADDHAR NO  NOT FOUND\n",tmpname);
+}
+else{
+gotoxy(25,20);
+cprintf("%s SUCCESSFILLY MODIYFYED\n",na);
+}
+fclose(fb);
+}
+void empmodi_fname()
+{
+clrscr();
+ int k=0,i;
+ char tmpname[25];
+ char na[20];
+ gotoxy(15,1);
+ printf("<<***MODIFICATION ON NAME***>>");
+ gotoxy(3,4);
+ printf("ENTER ADDHAR NO FOR MODIFY :-");
+ textcolor(GREEN);
+gotoxy(35,3);
+cprintf("%c",TLC);
+gotoxy(65,3);
+cprintf("%c",TRC);
+gotoxy(35,5);
+cprintf("%c",BLC);
+gotoxy(65,5);
+cprintf("%c",BRC);
+for(i=36;i<=64;i++)
+{
+gotoxy(i,3);
+cprintf("%c",HRL);
+gotoxy(i,5);
+cprintf("%c",HRL);
+}
+gotoxy(35,4);
+cprintf("%c",VRL);
+gotoxy(65,4);
+cprintf("%c",VRL);
+gotoxy(37,4);
+scanf("%s",tmpname);
+ fb=fopen("bank_employ.txt","rb+");
+
+while(fread(&b,sizeof(b),1,fb)==1)
+{
+if(strcmpi(tmpname,b.employ_addhar)==0)
+{
+gotoxy(3,7);
+printf("ENTER MODIFY FATHER'S NAME:->");
+gotoxy(35,6);
+cprintf("%c",TLC);
+gotoxy(65,6);
+cprintf("%c",TRC);
+gotoxy(35,8);
+cprintf("%c",BLC);
+gotoxy(65,8);
+cprintf("%c",BRC);
+for(i=36;i<=64;i++)
+{
+gotoxy(i,6);
+cprintf("%c",HRL);
+gotoxy(i,8);
+cprintf("%c",HRL);
+}
+gotoxy(35,7);
+cprintf("%c",VRL);
+gotoxy(65,7);
+cprintf("%c",VRL);
+gotoxy(37,7);
+fflush(stdin);
+gets(b.employ_fname);
+fseek(fb,-bi,1);
+strcpy(na,b.employ_fname);
+fwrite(&b,sizeof(b),1,fb);
+k=1;
+break;
+}
+}
+if(k==0)
+{
+gotoxy(25,20);
+cprintf("%s ADDHAR NOT FOUND\n",tmpname);
+}
+else{
+gotoxy(25,20);
+cprintf("%s SUCCESSFILLY MODIYFYED\n",na);
+}
+fclose(fb);
+}
+void empmodi_mob()
+{
+clrscr();
+ int k=0,i;
+ char tmpname[25];
+ char na[20];
+ gotoxy(15,1);
+ printf("<<***MODIFICATION ON NAME***>>");
+ gotoxy(3,4);
+ printf("ENTER MOBILE NO FOR MODIFY :-");
+ textcolor(GREEN);
+gotoxy(35,3);
+cprintf("%c",TLC);
+gotoxy(65,3);
+cprintf("%c",TRC);
+gotoxy(35,5);
+cprintf("%c",BLC);
+gotoxy(65,5);
+cprintf("%c",BRC);
+for(i=36;i<=64;i++)
+{
+gotoxy(i,3);
+cprintf("%c",HRL);
+gotoxy(i,5);
+cprintf("%c",HRL);
+}
+gotoxy(35,4);
+cprintf("%c",VRL);
+gotoxy(65,4);
+cprintf("%c",VRL);
+gotoxy(37,4);
+scanf("%s",tmpname);
+ fb=fopen("bank_employ.txt","rb+");
+
+while(fread(&b,sizeof(b),1,fb)==1)
+{
+if(strcmpi(tmpname,b.employ_addhar)==0)
+{
+gotoxy(8,7);
+printf("ENTER NEW MOBILE NO:->");
+gotoxy(35,6);
+cprintf("%c",TLC);
+gotoxy(65,6);
+cprintf("%c",TRC);
+gotoxy(35,8);
+cprintf("%c",BLC);
+gotoxy(65,8);
+cprintf("%c",BRC);
+for(i=36;i<=64;i++)
+{
+gotoxy(i,6);
+cprintf("%c",HRL);
+gotoxy(i,8);
+cprintf("%c",HRL);
+}
+gotoxy(35,7);
+cprintf("%c",VRL);
+gotoxy(65,7);
+cprintf("%c",VRL);
+gotoxy(37,7);
+fflush(stdin);
+gets(b.employ_mob);
+fseek(fb,-bi,1);
+strcpy(na,b.employ_mob);
+fwrite(&b,sizeof(b),1,fb);
+k=1;
+break;
+}
+}
+if(k==0)
+{
+gotoxy(25,20);
+cprintf("%s ADDHAR NOT FOUND\n",tmpname);
+}
+else{
+gotoxy(25,20);
+cprintf("%s SUCCESSFILLY MODIYFYED\n",na);
+}
+fclose(fb);
+}
+void empmodi_post()
+{
+clrscr();
+ int k=0,i;
+ char tmpname[25];
+ char na[20];
+ gotoxy(15,1);
+ printf("<<***MODIFICATION ON NAME***>>");
+ gotoxy(3,4);
+ printf("ENTER ADDHAR NO FOR MODIFY :-");
+ textcolor(GREEN);
+gotoxy(35,3);
+cprintf("%c",TLC);
+gotoxy(65,3);
+cprintf("%c",TRC);
+gotoxy(35,5);
+cprintf("%c",BLC);
+gotoxy(65,5);
+cprintf("%c",BRC);
+for(i=36;i<=64;i++)
+{
+gotoxy(i,3);
+cprintf("%c",HRL);
+gotoxy(i,5);
+cprintf("%c",HRL);
+}
+gotoxy(35,4);
+cprintf("%c",VRL);
+gotoxy(65,4);
+cprintf("%c",VRL);
+gotoxy(37,4);
+scanf("%s",tmpname);
+ fb=fopen("bank_employ.txt","rb+");
+
+while(fread(&b,sizeof(b),1,fb)==1)
+{
+if(strcmpi(tmpname,b.employ_addhar)==0)
+{
+gotoxy(8,7);
+printf("ENTER NEW POST:->");
+gotoxy(35,6);
+cprintf("%c",TLC);
+gotoxy(65,6);
+cprintf("%c",TRC);
+gotoxy(35,8);
+cprintf("%c",BLC);
+gotoxy(65,8);
+cprintf("%c",BRC);
+for(i=36;i<=64;i++)
+{
+gotoxy(i,6);
+cprintf("%c",HRL);
+gotoxy(i,8);
+cprintf("%c",HRL);
+}
+gotoxy(35,7);
+cprintf("%c",VRL);
+gotoxy(65,7);
+cprintf("%c",VRL);
+gotoxy(37,7);
+fflush(stdin);
+gets(b.employ_post);
+fseek(fb,-bi,1);
+strcpy(na,b.employ_post);
+fwrite(&b,sizeof(b),1,fb);
+k=1;
+break;
+}
+}
+if(k==0)
+{
+gotoxy(25,20);
+cprintf("%s ADDHAR  NOT FOUND\n",tmpname);
+}
+else{
+gotoxy(25,20);
+cprintf("%s SUCCESSFILLY MODIYFYED\n",na);
+}
+fclose(fb);
+}
+void empmodi_dob()
+{
+clrscr();
+ int k=0,i;
+ char tmpname[25];
+ char na[20];
+ gotoxy(15,1);
+ printf("<<***MODIFICATION ON NAME***>>");
+ gotoxy(3,4);
+ printf("ENTER ADDHAR NO FOR MODIFY :-");
+ textcolor(GREEN);
+gotoxy(35,3);
+cprintf("%c",TLC);
+gotoxy(65,3);
+cprintf("%c",TRC);
+gotoxy(35,5);
+cprintf("%c",BLC);
+gotoxy(65,5);
+cprintf("%c",BRC);
+for(i=36;i<=64;i++)
+{
+gotoxy(i,3);
+cprintf("%c",HRL);
+gotoxy(i,5);
+cprintf("%c",HRL);
+}
+gotoxy(35,4);
+cprintf("%c",VRL);
+gotoxy(65,4);
+cprintf("%c",VRL);
+gotoxy(37,4);
+scanf("%s",tmpname);
+ fb=fopen("bank_employ.txt","rb+");
+
+while(fread(&b,sizeof(b),1,fb)==1)
+{
+if(strcmpi(tmpname,b.employ_addhar)==0)
+{
+gotoxy(3,7);
+printf("ENTER MODIFY DATE OF BIRTH:->");
+gotoxy(35,6);
+cprintf("%c",TLC);
+gotoxy(65,6);
+cprintf("%c",TRC);
+gotoxy(35,8);
+cprintf("%c",BLC);
+gotoxy(65,8);
+cprintf("%c",BRC);
+for(i=36;i<=64;i++)
+{
+gotoxy(i,6);
+cprintf("%c",HRL);
+gotoxy(i,8);
+cprintf("%c",HRL);
+}
+gotoxy(35,7);
+cprintf("%c",VRL);
+gotoxy(65,7);
+cprintf("%c",VRL);
+gotoxy(37,7);
+fflush(stdin);
+gets(b.employ_dob);
+fseek(fb,-bi,1);
+strcpy(na,s.ho_dob);
+fwrite(&b,sizeof(b),1,fb);
+k=1;
+break;
+}
+}
+if(k==0)
+{
+gotoxy(25,20);
+cprintf("%s ADDHAR NO NOT FOUND\n",tmpname);
+}
+else{
+gotoxy(25,20);
+cprintf("%s SUCCESSFILLY MODIYFYED\n",na);
+}
+fclose(fb);
+}
+/*void empmodi_salary()
+{
+clrscr();
+ int k=0,i;
+ char tmpname[25];
+ long na[20];
+ gotoxy(15,1);
+ printf("<<***MODIFICATION ON NAME***>>");
+ gotoxy(3,4);
+ printf("ENTER ADDHAR NO FOR MODIFY :-");
+ textcolor(GREEN);
+gotoxy(35,3);
+cprintf("%c",TLC);
+gotoxy(65,3);
+cprintf("%c",TRC);
+gotoxy(35,5);
+cprintf("%c",BLC);
+gotoxy(65,5);
+cprintf("%c",BRC);
+for(i=36;i<=64;i++)
+{
+gotoxy(i,3);
+cprintf("%c",HRL);
+gotoxy(i,5);
+cprintf("%c",HRL);
+}
+gotoxy(35,4);
+cprintf("%c",VRL);
+gotoxy(65,4);
+cprintf("%c",VRL);
+gotoxy(37,4);
+scanf("%s",tmpname);
+ fb=fopen("bank_employ.txt","rb+");
+
+while(fread(&b,sizeof(b),1,fb)==1)
+{
+if(strcmpi(tmpname,b.employ_addhar)==0)
+{
+gotoxy(8,7);
+printf("ENTER NEW SALARRY:->");
+gotoxy(35,6);
+cprintf("%c",TLC);
+gotoxy(65,6);
+cprintf("%c",TRC);
+gotoxy(35,8);
+cprintf("%c",BLC);
+gotoxy(65,8);
+cprintf("%c",BRC);
+for(i=36;i<=64;i++)
+{
+gotoxy(i,6);
+cprintf("%c",HRL);
+gotoxy(i,8);
+cprintf("%c",HRL);
+}
+gotoxy(35,7);
+cprintf("%c",VRL);
+gotoxy(65,7);
+cprintf("%c",VRL);
+gotoxy(37,7);
+fflush(stdin);
+fscanf("%ld",&b.employ_salary);
+fseek(fb,-bi,1);
+na=b.employ_salary;
+fwrite(&b,sizeof(b),1,fb);
+k=1;
+break;
+}
+}
+if(k==0)
+{
+gotoxy(25,20);
+cprintf("%s ADDHER NO NOT FOUND\n",tmpname);
+}
+else{
+gotoxy(25,20);
+cprintf("%s SUCCESSFILLY MODIYFYED\n",na);
+}
+fclose(fb);
+}
+
+  */
+//*******************(end of employ function defination)******************
+
+void holder()
+{
+clrscr();
+int p,i,key=9;
+char menu[9][30]={
+		 {"INSERT HOLDER NEW RECORD     "},
+		 {"DISPLAY HOLDER DETAIL        "},
+		 {"CLOSED HOLDER ACCAUNT        "},
+		 {"SEARCH HOLDER MENU DETAIL    "},
+		 {"MODIFY HOLDER MENU           "},
+		 {"SORTING HOLDER NAME          "},
+		 {"WIDRAWAL MONEY               "},
+		 {"RECET ALL HOLDER             "},
+		 {"main menu                    "}
+		 };
+gotoxy(20,3);
+textcolor(RED);
+cprintf("***************************************");
+gotoxy(20,5);
+cprintf("|   FULLY ACAUNT HOLDER INFORMANTON   |");
+gotoxy(20,7);
+cprintf("***************************************");
+textcolor(RED+BLINK);
+textbackground(YELLOW);
+gotoxy(25,23);
+cprintf("press enter for select");
+textcolor(WHITE+BLINK);
+textbackground(RED);
+gotoxy(5,1);
+cprintf("TODAY DATE");
+textcolor(WHITE+BLINK);
+textbackground(RED);
+gotoxy(66,1);
+cprintf("CURRENT TIME");
+
+textcolor(RED);
+textbackground(WHITE);
+gotoxy(5,3);
+cprintf("%s",__DATE__);
+textcolor(RED);
+textbackground(WHITE);
+gotoxy(67,3);
+cprintf("%s",__TIME__);
+
+textbackground(CYAN);
+for(i=0;i<9;i++)
+{
+p=10;
+gotoxy(30,p+i);
+textcolor(BLACK);
+cprintf("\n%s",menu[i]);
+}
+i=9;
+do
+{
+if(i==9)
+{
+i--;
+textbackground(BLUE);
+textcolor(RED);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+}
+key=getch();
+if(key==72&&i>=1)
+{
+textbackground(CYAN);
+textcolor(WHITE);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+i--;
+textbackground(BLUE);
+textcolor(RED);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+}
+if(key==80&&i<=7)
+{
+textbackground(CYAN);
+textcolor(BLACK);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+i++;
+textbackground(WHITE);
+textcolor(BLACK);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+}
+if(key==13&&i==8)
+{
+textbackground(CYAN);
+main();
+}
+if(key==13&&i==7)
+{
+textbackground(CYAN);
+recet_ho();
+getch();
+clrscr();
+holder();
+}
+if(key==13&&i==6)
+{
+textbackground(CYAN);
+widra();
+getch();
+clrscr();
+holder();
+}
+if(key==13&&i==5)
+{
+textbackground(CYAN);
+ho_sortname();
+getch();
+clrscr();
+holder();
+}
+
+if(key==13&&i==4)
+{
+textbackground(CYAN);
+ho_modify();
+getch();
+clrscr();
+holder();
+}
+if(key==13&&i==3)
+{
+textbackground(CYAN);
+ho_ser();
+getch();
+clrscr();
+holder();
+}
+if(key==13&&i==2)
+{
+textbackground(CYAN);
+ho_del();
+getch();
+clrscr();
+holder();
+}
+if(key==13&&i==1)
+{
+textbackground(CYAN);
+ho_display();
+getch();
+clrscr();
+holder();
+}
+if(key==13&&i==0)
+{
+textbackground(CYAN);
+ho_append();
+getch();
+clrscr();
+holder();
+}
+}while(key!=27);
+}
+void ho_append()
+{
+char mo[20],ad[20],add[20],moo[20];
+int l1,l2,x,y;
+int i,k=0 ,z,r=1,mh=1;
+long ac=1025000,g;
+clrscr();
+while(mh==1)
+{
+fp=fopen("holder.txt","rb");
+while(fread(&s,sizeof(s),1,fp)==1)
+{
+if(r==1)
+{g=s.ho_acno;}
+if(s.ho_acno>g)
+{
+g=s.ho_acno;
+}
+r++;
+}
+if(r<2)
+g=ac;
+fclose(fp);
+textbackground(CYAN);
+fp=fopen("holder.txt","ab");
+//while(mh==1)
+//{
+clrscr();
+{
+if(k==0)
+{
+//textbackground(CYAN);
+//textcolor(RED);
+gotoxy(2,2);
+cprintf("enter holder name :==============>");
+gotoxy(2,5);
+printf("enter ho father's name :==========>");
+gotoxy(2,8);
+printf("enter ho address :================>");
+gotoxy(2,11);
+printf("enter addhar no :=================>");
+gotoxy(2,14);
+printf("enter phone no :==================>");
+gotoxy(2,17);
+printf("enter D.O.B in form of 00/00/0000:=======>");
+}
+else
+{
+z:
+clrscr();
+//textbackground(CYAN);
+//textcolor(RED);
+gotoxy(2,2);
+cprintf("enter holder a/c no :=========>");
+gotoxy(2,5);
+printf("enter  branch name :==============>");
+gotoxy(2,8);
+printf("enter holder a/c typed :==========>");
+gotoxy(2,11);
+printf("enter holder ifsc code :==========>");
+gotoxy(2,14);
+printf("enter first time deposite amount :=>");
+gotoxy(2,17);
+printf("enter date of opning account 00/00/0000:=>");
+}
+}
+textcolor(GREEN);
+gotoxy(35,1);
+cprintf("%c",TLC);
+gotoxy(65,1);
+cprintf("%c",TRC);
+gotoxy(35,3);
+cprintf("%c",BLC);
+gotoxy(65,3);
+cprintf("%c",BRC);
+for(i=36;i<=64;i++)
+{
+gotoxy(i,1);
+cprintf("%c",HRL);
+gotoxy(i,3);
+cprintf("%c",HRL);
+}
+gotoxy(35,2);
+cprintf("%c",VRL);
+gotoxy(65,2);
+cprintf("%c",VRL);
+//----------------
+gotoxy(40,4);
+cprintf("%c",TLC);
+gotoxy(70,4);
+cprintf("%c",TRC);
+gotoxy(40,6);
+cprintf("%c",BLC);
+gotoxy(70,6);
+cprintf("%c",BRC);
+for(i=41;i<=69;i++)
+{
+gotoxy(i,4);
+cprintf("%c",HRL);
+gotoxy(i,6);
+cprintf("%c",HRL);
+}
+gotoxy(40,5);
+cprintf("%c",VRL);
+gotoxy(70,5);
+cprintf("%c",VRL);
+//----------
+gotoxy(40,7);
+cprintf("%c",TLC);
+gotoxy(70,7);
+cprintf("%c",TRC);
+gotoxy(40,9);
+cprintf("%c",BLC);
+gotoxy(70,9);
+cprintf("%c",BRC);
+for(i=41;i<=69;i++)
+{
+gotoxy(i,7);
+cprintf("%c",HRL);
+gotoxy(i,9);
+cprintf("%c",HRL);
+}
+gotoxy(40,8);
+cprintf("%c",VRL);
+gotoxy(70,8);
+cprintf("%c",VRL);
+//----------------
+gotoxy(40,10);
+cprintf("%c",TLC);
+gotoxy(70,10);
+cprintf("%c",TRC);
+gotoxy(40,12);
+cprintf("%c",BLC);
+gotoxy(70,12);
+cprintf("%c",BRC);
+for(i=41;i<=69;i++)
+{
+gotoxy(i,10);
+cprintf("%c",HRL);
+gotoxy(i,12);
+cprintf("%c",HRL);
+}
+gotoxy(40,11);
+cprintf("%c",VRL);
+gotoxy(70,11);
+cprintf("%c",VRL);
+//----------------
+gotoxy(40,13);
+cprintf("%c",TLC);
+gotoxy(70,13);
+cprintf("%c",TRC);
+gotoxy(40,15);
+cprintf("%c",BLC);
+gotoxy(70,15);
+cprintf("%c",BRC);
+for(i=41;i<=69;i++)
+{
+gotoxy(i,13);
+cprintf("%c",HRL);
+gotoxy(i,15);
+cprintf("%c",HRL);
+}
+gotoxy(40,14);
+cprintf("%c",VRL);
+gotoxy(70,14);
+cprintf("%c",VRL);
+//----------------
+gotoxy(45,16);
+cprintf("%c",TLC);
+gotoxy(60,16);
+cprintf("%c",TRC);
+gotoxy(45,18);
+cprintf("%c",BLC);
+gotoxy(60,18);
+cprintf("%c",BRC);
+for(i=46;i<=59;i++)
+{
+gotoxy(i,16);
+cprintf("%c",HRL);
+gotoxy(i,18);
+cprintf("%c",HRL);
+}
+gotoxy(45,17);
+cprintf("%c",VRL);
+gotoxy(60,17);
+cprintf("%c",VRL);
+//-----------------
+if(k==0)
+{
+textbackground(CYAN);
+textcolor(YELLOW);
+fflush(stdin);
+gotoxy(37,2);
+gets(s.ho_name);
+gotoxy(42,5);
+gets(s.ho_frname);
+gotoxy(42,8);
+gets(s.ho_address);
+x:
+gotoxy(42,11);
+cscanf("%s",&ad);
+l1=strlen(ad);
+if(l1==12)
+strcpy(s.ho_addhar,ad);
+else
+{
+gotoxy(3,12);
+cprintf("plese insert 12 digite addhar no");
+strcpy(add,ad);
+goto x;
+}
+y:
+gotoxy(42,14);
+cscanf("%s",&mo);
+l2=strlen(mo);
+if(l2==10)
+strcpy(s.ho_phone,mo);
+else
+{
+gotoxy(3,15);
+cprintf("plese insert 10 digite mobile no");
+strcpy(moo,mo);
+goto y;
+}
+//cscanf("%ld",&s.ho_phone);
+gotoxy(47,17);
+cscanf("%s",s.ho_dob);
+//------------------
+k=1;
+goto z;
+}
+else
+{
+textcolor(YELLOW);
+textbackground(CYAN);
+fflush(stdin);
+gotoxy(38,2);
+printf("%ld",++g);
+s.ho_acno=g;
+gotoxy(43,5);
+scanf("%s",s.ho_branch);
+gotoxy(43,8);
+scanf("%s",s.ho_actype);
+gotoxy(43,11);
+scanf("%s",s.ho_ifsc);
+gotoxy(43,14);
+cscanf("%ld",&s.ho_fdepo);
+gotoxy(48,17);
+cprintf("%s",__DATE__);
+strcpy(s.ho_date,__DATE__);
+k=0;
+}
+fwrite(&s,sizeof(s),1,fp);
+gotoxy(2,20);
+printf("want to continue press [1]====>");
+gotoxy(45,19);
+cprintf("%c",TLC);
+gotoxy(48,19);
+cprintf("%c",TRC);
+gotoxy(45,21);
+cprintf("%c",BLC);
+gotoxy(48,21);
+cprintf("%c",BRC);
+for(i=46;i<=47;i++)
+{
+gotoxy(i,19);
+cprintf("%c",HRL);
+gotoxy(i,21);
+cprintf("%c",HRL);
+}
+gotoxy(45,20);
+cprintf("%c",VRL);
+gotoxy(48,20);
+cprintf("%c",VRL);
+gotoxy(47,20);
+scanf("%d",&mh);
+}
+fclose(fp);
+}
+void ho_display()
+{
+int i=5;
+clrscr();
+fp=fopen("holder.txt","rb");
+gotoxy(1,3);
+cprintf("HO-NAME");
+gotoxy(15,3);
+cprintf("HO-FR.NAME");
+gotoxy(30,3);
+cprintf("HO-ADDRESS");
+gotoxy(45,3);
+cprintf("HO-ADDHAR");
+gotoxy(58,3);
+cprintf("HO-phone.no");
+gotoxy(70,3);
+
+cprintf("HO-date");
+printf("\n------------------------------------------------------------------------------\n");
+while(fread(&s,sizeof(s),1,fp)==1)
+{
+gotoxy(1,i);
+printf("%s",s.ho_name);
+gotoxy(15,i);
+printf("%s",s.ho_frname);
+gotoxy(30,i);
+printf("%s",s.ho_address);
+gotoxy(45,i);
+printf("%s",s.ho_addhar);
+gotoxy(58,i);
+printf("%s",s.ho_phone);
+gotoxy(70,i);
+printf("%s",s.ho_date);
+i++;
+}
+printf("\n--------------------------------------------------------------------------------\n");
+printf("\n");
+fclose(fp);
+}
+void ho_del()
+{
+clrscr();
+int f=0;
+long no;
+char name1[20];
+fp=fopen("holder.txt","rb");
+printf("ENTER ACCAUNT NO FOR DELETION :-");
+scanf("%ld",&no);
+ftemp=fopen("pholder.txt","wb");
+while(fread(&s,sizeof(s),1,fp)==1)
+{
+if(s.ho_acno!=no)
+fwrite(&s,sizeof(s),1,ftemp);
+else
+{
+strcpy(name1,s.ho_name);
+f=1;
+}
+}
+fclose(fp);
+fclose(ftemp);
+remove("holder.txt");
+rename("pholder.txt","holder.txt");
+if(f==0)
+printf("%ld A/C N0 HAS NOT EXIST ON THE BANK",no);
+else
+printf("%s A/C NO:-%ld HAS CLOSED HIS ACCAUNT",name1,no);
+
+}
+//**************
+void ho_ser()
+{
+clrscr();
+int p,i,key=9;
+char menu[8][40]={
+		 {"SEARCHING ON NAME           "},
+		 {"SEARCHING ON ADDHAR NO      "},
+		 {"SEARCHING ON A/C NO         "},
+		 {"SEARCHING ON D.O.B          "},
+		 {"SEARCHING ON A/C OPNING DATE"},
+		 {"SEARCHING ON MOBILE NO      "},
+		 {"PREVIOUS MENU               "},
+		 {"MAIN MENU                   "}
+		 };
+gotoxy(20,3);
+textcolor(RED);
+cprintf("***************************************");
+gotoxy(20,4);
+cprintf("|  HOLDER SEARCHING ALL INFORMANTON   |");
+gotoxy(20,5);
+cprintf("***************************************");
+
+textbackground(CYAN);
+for(i=0;i<8;i++)
+{
+p=10;
+gotoxy(30,p+i);
+textcolor(BLACK);
+cprintf("\n%s",menu[i]);
+}
+i=8;
+do
+{
+if(i==8)
+{
+i--;
+textbackground(BLUE);
+textcolor(RED);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+}
+key=getch();
+if(key==72&&i>=1)
+{
+textbackground(CYAN);
+textcolor(WHITE);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+i--;
+textbackground(BLUE);
+textcolor(RED);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+}
+if(key==80&&i<=6)
+{
+textbackground(CYAN);
+textcolor(BLACK);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+i++;
+textbackground(WHITE);
+textcolor(BLACK);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+}
+textcolor(RED);
+textbackground(YELLOW);
+gotoxy(25,24);
+cprintf("press enter for select");
+if(key==13&&i==7)
+{
+main();
+}
+if(key==13&&i==6)
+{
+holder();
+getch();
+ho_ser();
+}
+if(key==13&&i==5)
+{
+textbackground(CYAN);
+ho_ser_phone();
+getch();
+ho_ser();
+}
+if(key==13&&i==4)
+{
+textbackground(CYAN);
+ho_ser_date();
+getch();
+ho_ser();
+}
+if(key==13&&i==3)
+{
+textbackground(CYAN);
+ho_ser_dob();
+getch();
+ho_ser();
+}
+if(key==13&&i==2)
+{
+textbackground(CYAN);
+ho_ser_acno();
+getch();
+ho_ser();
+}
+if(key==13&&i==1)
+{
+ho_ser_addhar();
+getch();
+ho_ser();
+}
+if(key==13&&i==0)
+{
+textbackground(CYAN);
+ho_ser_name();
+getch();
+ho_ser();
+}
+}while(key!=27);
+}
+ void ho_ser_name()
+ {
+ clrscr();
+ int p=0,p1=0,y=5,x=11;
+ char tmpname[30];
+ fflush(stdin);
+ textbackground(WHITE);
+ printf("enter name has to be search\n");
+ gets(tmpname);
+ fp=fopen("holder.txt","rb");
+if(p==0)
+{
+//textcolor(BLUE);
+gotoxy(1,4);
+cprintf("HO-NAME");
+gotoxy(15,4);
+cprintf("HO-FR.NAME");
+gotoxy(30,4);
+cprintf("HO-ADDRESS");
+gotoxy(45,4);
+cprintf("HO-ADDHAR");
+gotoxy(58,4);
+cprintf("HO-phone.no");
+gotoxy(70,4);
+cprintf("HO-D.O.B");
+gotoxy(1,10);
+cprintf("HO-A/C-no");
+gotoxy(15,10);
+cprintf("HO-BRANCH");
+gotoxy(30,10);
+cprintf("HO-A/C(TYPE)");
+gotoxy(45,10);
+cprintf("HO-IFSE");
+gotoxy(58,10);
+cprintf("AVELBLE-BAL");
+gotoxy(70,10);
+cprintf("HO-o/p date");
+
+p=1;
+}
+while(fread(&s,sizeof(s),1,fp)==1)
+if(strcmpi(tmpname,s.ho_name)==0)
+{
+textcolor(YELLOW);
+gotoxy(1,y);
+printf("%s",s.ho_name);
+gotoxy(15,y);
+printf("%s",s.ho_frname);
+gotoxy(30,y);
+printf("%s",s.ho_address);
+gotoxy(45,y);
+printf("%s",s.ho_addhar);
+gotoxy(58,y);
+printf("%s",s.ho_phone);
+gotoxy(70,y);
+printf("%s",s.ho_dob);
+p1=1;
+y++;
+gotoxy(1,x);
+printf("%ld",s.ho_acno);
+gotoxy(15,x);
+printf("%s",s.ho_branch);
+gotoxy(30,x);
+printf("%s",s.ho_actype);
+gotoxy(45,x);
+printf("%s",s.ho_ifsc);
+gotoxy(58,x);
+printf("%ld",s.ho_fdepo);
+gotoxy(70,x);
+printf("%s",s.ho_date);
+x++;
+}
+if(p1==0)
+{
+gotoxy(25,20);
+cprintf("name not found\n");
+}
+else{
+gotoxy(25,20);
+y=y-7;
+cprintf("%d DATA PRESENT IN HE FILE\n",y);
+}
+fclose(fp);
+}
+void ho_ser_addhar()
+{
+clrscr();
+ int p=0,p1=0,y=5,x=11;
+ char tmpaddhar[20];
+ fflush(stdin);
+ printf("enter addhar no has to be search\n");
+ scanf("%s",tmpaddhar);
+ fp=fopen("holder.txt","rb");
+if(p==0)
+{
+//textcolor(BLUE);
+gotoxy(1,4);
+cprintf("HO-NAME");
+gotoxy(15,4);
+cprintf("HO-FR.NAME");
+gotoxy(30,4);
+cprintf("HO-ADDRESS");
+gotoxy(45,4);
+cprintf("HO-ADDHAR");
+gotoxy(58,4);
+cprintf("HO-phone.no");
+gotoxy(70,4);
+cprintf("HO-D.O.B");
+gotoxy(1,10);
+cprintf("HO-A/C-no");
+gotoxy(15,10);
+cprintf("HO-BRANCH");
+gotoxy(30,10);
+cprintf("HO-A/C(TYPE)");
+gotoxy(45,10);
+cprintf("HO-IFSE");
+gotoxy(58,10);
+cprintf("AVELABLE-BAL");
+gotoxy(70,10);
+cprintf("HO-o/p date");
+
+p=1;
+}
+while(fread(&s,sizeof(s),1,fp)==1)
+{
+if(strcmpi(s.ho_addhar,tmpaddhar)==0)
+{
+textcolor(YELLOW);
+gotoxy(1,y);
+printf("%s",s.ho_name);
+gotoxy(15,y);
+printf("%s",s.ho_frname);
+gotoxy(30,y);
+printf("%s",s.ho_address);
+gotoxy(45,y);
+printf("%s",s.ho_addhar);
+gotoxy(58,y);
+printf("%s",s.ho_phone);
+gotoxy(70,y);
+printf("%s",s.ho_dob);
+p1=1;
+y++;
+gotoxy(1,x);
+printf("%ld",s.ho_acno);
+gotoxy(15,x);
+printf("%s",s.ho_branch);
+gotoxy(30,x);
+printf("%s",s.ho_actype);
+gotoxy(45,x);
+printf("%s",s.ho_ifsc);
+gotoxy(58,x);
+printf("%ld",s.ho_fdepo);
+gotoxy(70,x);
+printf("%s",s.ho_date);
+x++;
+}
+}
+if(p1==0)
+{
+gotoxy(25,20);
+cprintf("addhar not found\n");
+}
+else{
+gotoxy(25,20);
+y=y-7;
+cprintf("%d DATA PRESENT IN HE FILE\n",y);
+}
+fclose(fp);
+}
+void ho_ser_acno()
+{
+clrscr();
+ int p=0,p1=0,y=5,x=11;
+ long tmpacno;
+ fflush(stdin);
+ printf("enter accaunt no has to be search\n");
+ scanf("%ld",&tmpacno);
+ fp=fopen("holder.txt","rb");
+if(p==0)
+{
+//textcolor(BLUE);
+gotoxy(1,4);
+cprintf("HO-NAME");
+gotoxy(15,4);
+cprintf("HO-FR.NAME");
+gotoxy(30,4);
+cprintf("HO-ADDRESS");
+gotoxy(45,4);
+cprintf("HO-ADDHAR");
+gotoxy(58,4);
+cprintf("HO-phone.no");
+gotoxy(70,4);
+cprintf("HO-D.O.B");
+gotoxy(1,10);
+cprintf("HO-A/C-no");
+gotoxy(15,10);
+cprintf("HO-BRANCH");
+gotoxy(30,10);
+cprintf("HO-A/C(TYPE)");
+gotoxy(45,10);
+cprintf("HO-IFSE");
+gotoxy(58,10);
+cprintf("AVELABLE-BAL");
+gotoxy(70,10);
+cprintf("HO-o/p date");
+
+p=1;
+}
+while(fread(&s,sizeof(s),1,fp)==1)
+if(tmpacno==s.ho_acno)
+{
+textcolor(YELLOW);
+gotoxy(1,y);
+printf("%s",s.ho_name);
+gotoxy(15,y);
+printf("%s",s.ho_frname);
+gotoxy(30,y);
+printf("%s",s.ho_address);
+gotoxy(45,y);
+printf("%s",s.ho_addhar);
+gotoxy(58,y);
+printf("%s",s.ho_phone);
+gotoxy(70,y);
+printf("%s",s.ho_dob);
+p1=1;
+y++;
+gotoxy(1,x);
+printf("%ld",s.ho_acno);
+gotoxy(15,x);
+printf("%s",s.ho_branch);
+gotoxy(30,x);
+printf("%s",s.ho_actype);
+gotoxy(45,x);
+printf("%s",s.ho_ifsc);
+gotoxy(58,x);
+printf("%ld",s.ho_fdepo);
+gotoxy(70,x);
+printf("%s",s.ho_date);
+x++;
+}
+if(p1==0)
+{
+gotoxy(25,20);
+cprintf("accaunt no not found\n");
+}
+else{
+gotoxy(25,20);
+y=y-7;
+cprintf("%d DATA PRESENT IN HE FILE\n",y);
+}
+fclose(fp);
+ }
+void ho_ser_dob()
+{
+clrscr();
+ int p=0,p1=0,y=5,x=11;
+ char tmpdob[15];
+ fflush(stdin);
+ printf("enter holder D.O.B no has to be search\n");
+ scanf("%s",tmpdob);
+ fp=fopen("holder.txt","rb");
+if(p==0)
+{
+//textcolor(BLUE);
+gotoxy(1,4);
+cprintf("HO-NAME");
+gotoxy(15,4);
+cprintf("HO-FR.NAME");
+gotoxy(30,4);
+cprintf("HO-ADDRESS");
+gotoxy(45,4);
+cprintf("HO-ADDHAR");
+gotoxy(58,4);
+cprintf("HO-phone.no");
+gotoxy(70,4);
+cprintf("HO-D.O.B");
+gotoxy(1,10);
+cprintf("HO-A/C-no");
+gotoxy(15,10);
+cprintf("HO-BRANCH");
+gotoxy(30,10);
+cprintf("HO-A/C(TYPE)");
+gotoxy(45,10);
+cprintf("HO-IFSE");
+gotoxy(58,10);
+cprintf("AVELABLE-BAL");
+gotoxy(70,10);
+cprintf("HO-o/p date");
+
+p=1;
+}
+while(fread(&s,sizeof(s),1,fp)==1)
+if(strcmpi(tmpdob,s.ho_dob)==0)
+{
+textcolor(YELLOW);
+gotoxy(1,y);
+printf("%s",s.ho_name);
+gotoxy(15,y);
+printf("%s",s.ho_frname);
+gotoxy(30,y);
+printf("%s",s.ho_address);
+gotoxy(45,y);
+printf("%s",s.ho_addhar);
+gotoxy(58,y);
+printf("%s",s.ho_phone);
+gotoxy(70,y);
+printf("%s",s.ho_dob);
+p1=1;
+y++;
+gotoxy(1,x);
+printf("%ld",s.ho_acno);
+gotoxy(15,x);
+printf("%s",s.ho_branch);
+gotoxy(30,x);
+printf("%s",s.ho_actype);
+gotoxy(45,x);
+printf("%s",s.ho_ifsc);
+gotoxy(58,x);
+printf("%ld",s.ho_fdepo);
+gotoxy(70,x);
+printf("%s",s.ho_date);
+x++;
+}
+if(p1==0)
+{
+gotoxy(25,20);
+cprintf("D.O.B not found\n");
+}
+else{
+gotoxy(25,20);
+y=y-7;
+cprintf("%d DATA PRESENT IN HE FILE\n",y);
+}
+fclose(fp);
+}
+void ho_ser_date()
+{
+clrscr();
+ int p=0,p1=0,y=5,x=11;
+ char tmpdate[15];
+ fflush(stdin);
+ printf("enter date for searching opning accaunt\n");
+ scanf("%c",tmpdate);
+ fp=fopen("holder.txt","rb");
+if(p==0)
+{
+//textcolor(BLUE);
+gotoxy(1,4);
+cprintf("HO-NAME");
+gotoxy(15,4);
+cprintf("HO-FR.NAME");
+gotoxy(30,4);
+cprintf("HO-ADDRESS");
+gotoxy(45,4);
+cprintf("HO-ADDHAR");
+gotoxy(58,4);
+cprintf("HO-phone.no");
+gotoxy(70,4);
+cprintf("HO-D.O.B");
+gotoxy(1,10);
+cprintf("HO-A/C-no");
+gotoxy(15,10);
+cprintf("HO-BRANCH");
+gotoxy(30,10);
+cprintf("HO-A/C(TYPE)");
+gotoxy(45,10);
+cprintf("HO-IFSE");
+gotoxy(58,10);
+cprintf("AVELABLE-BAL");
+gotoxy(70,10);
+cprintf("HO-o/p date");
+
+p=1;
+}
+while(fread(&s,sizeof(s),1,fp)==1)
+if(strcmpi(tmpdate,s.ho_date)==0)
+{
+textcolor(YELLOW);
+gotoxy(1,y);
+printf("%s",s.ho_name);
+gotoxy(15,y);
+printf("%s",s.ho_frname);
+gotoxy(30,y);
+printf("%s",s.ho_address);
+gotoxy(45,y);
+printf("%s",s.ho_addhar);
+gotoxy(58,y);
+printf("%s",s.ho_phone);
+gotoxy(70,y);
+printf("%s",s.ho_dob);
+p1=1;
+y++;
+gotoxy(1,x);
+printf("%ld",s.ho_acno);
+gotoxy(15,x);
+printf("%s",s.ho_branch);
+gotoxy(30,x);
+printf("%s",s.ho_actype);
+gotoxy(45,x);
+printf("%s",s.ho_ifsc);
+gotoxy(58,x);
+printf("%ld",s.ho_fdepo);
+gotoxy(70,x);
+printf("%s",s.ho_date);
+x++;
+}
+if(p1==0)
+{
+gotoxy(25,20);
+cprintf("date not found\n");
+}
+else{
+gotoxy(25,20);
+y=y-7;
+cprintf("%d DATA PRESENT IN HE FILE\n",y);
+}
+fclose(fp);
+}
+void ho_ser_phone()
+{
+clrscr();
+ int p=0,p1=0,y=5,x=11;
+ char tmpph[20];
+ fflush(stdin);
+ printf("enter holder phone no has to be search\n");
+ scanf("%s",tmpph);
+ fp=fopen("holder.txt","rb");
+if(p==0)
+{
+//textcolor(BLUE);
+gotoxy(1,4);
+cprintf("HO-NAME");
+gotoxy(15,4);
+cprintf("HO-FR.NAME");
+gotoxy(30,4);
+cprintf("HO-ADDRESS");
+gotoxy(45,4);
+cprintf("HO-ADDHAR");
+gotoxy(58,4);
+cprintf("HO-phone.no");
+gotoxy(70,4);
+cprintf("HO-D.O.B");
+gotoxy(1,10);
+cprintf("HO-A/C-no");
+gotoxy(15,10);
+cprintf("HO-BRANCH");
+gotoxy(30,10);
+cprintf("HO-A/C(TYPE)");
+gotoxy(45,10);
+cprintf("HO-IFSE");
+gotoxy(58,10);
+cprintf("AVELABLE-BAL");
+gotoxy(70,10);
+cprintf("HO-o/p date");
+
+p=1;
+}
+while(fread(&s,sizeof(s),1,fp)==1)
+{
+if(strcmpi(tmpph,s.ho_phone)==0)
+{
+textcolor(YELLOW);
+gotoxy(1,y);
+printf("%s",s.ho_name);
+gotoxy(15,y);
+printf("%s",s.ho_frname);
+gotoxy(30,y);
+printf("%s",s.ho_address);
+gotoxy(45,y);
+printf("%s",s.ho_addhar);
+gotoxy(58,y);
+printf("%s",s.ho_phone);
+gotoxy(70,y);
+printf("%s",s.ho_dob);
+p1=1;
+y++;
+gotoxy(1,x);
+printf("%ld",s.ho_acno);
+gotoxy(15,x);
+printf("%s",s.ho_branch);
+gotoxy(30,x);
+printf("%s",s.ho_actype);
+gotoxy(45,x);
+printf("%s",s.ho_ifsc);
+gotoxy(58,x);
+printf("%s",s.ho_fdepo);
+gotoxy(70,x);
+printf("%s",s.ho_date);
+x++;
+}
+}
+if(p1==0)
+{
+gotoxy(25,20);
+cprintf("mobile no not found\n");
+}
+else{
+gotoxy(25,20);
+y=y-7;
+cprintf("%d DATA PRESENT IN HE FILE\n",y);
+}
+fclose(fp);
+}
+void ho_modify()
+{
+clrscr();
+int p,i,key=9;
+textbackground(CYAN);
+textcolor(5);
+char menu[7][31]={
+		 {"MODIFICATION ON NAME          "},
+		 {"MODIFICATION ON ADDRESS       "},
+		 {"MODIFICATION ON FATHER'S NAME "},
+		 {"MODIFICATION ON MOBILE-NO     "},
+		 {"MODIFICATION ON A/C(TYPE)     "},
+		 {"MODIFICATION ON D.O.B         "},
+		 {" GO TO PREVIOUS MENU          "}
+		 };
+gotoxy(20,3);
+textcolor(RED);
+cprintf("****************************************");
+gotoxy(20,5);
+cprintf("|   FULLY ACAUNT HOLDER MODIFICATION   |");
+gotoxy(20,7);
+cprintf("****************************************");
+textcolor(RED+BLINK);
+textbackground(YELLOW);
+gotoxy(25,23);
+cprintf("PERSS ENTER FOR SELECT MENU");
+textcolor(WHITE+BLINK);
+textbackground(RED);
+gotoxy(5,1);
+cprintf("TODAY DATE");
+textcolor(WHITE+BLINK);
+textbackground(RED);
+gotoxy(66,1);
+cprintf("CURRENT TIME");
+
+textcolor(RED);
+textbackground(WHITE);
+gotoxy(5,3);
+cprintf("%s",__DATE__);
+textcolor(RED);
+textbackground(WHITE);
+gotoxy(67,3);
+cprintf("%s",__TIME__);
+
+textbackground(CYAN);
+for(i=0;i<7;i++)
+{
+p=10;
+gotoxy(30,p+i);
+textcolor(BLACK);
+cprintf("\n%s",menu[i]);
+}
+i=7;
+do
+{
+if(i==7)
+{
+i--;
+textbackground(BLUE);
+textcolor(RED);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+}
+key=getch();
+if(key==72&&i>=1)
+{
+textbackground(CYAN);
+textcolor(WHITE);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+i--;
+textbackground(BLUE);
+textcolor(RED);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+}
+if(key==80&&i<=5)
+{
+textbackground(CYAN);
+textcolor(BLACK);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+i++;
+textbackground(WHITE);
+textcolor(BLACK);
+gotoxy(30,p+i);
+cprintf("\n%s",menu[i]);
+}
+if(key==13&&i==6)
+{
+textbackground(CYAN);
+holder();
+}
+if(key==13&&i==5)
+{
+textbackground(CYAN);
+ho_modidob();
+getch();
+clrscr();
+ho_modify();
+}
+textbackground(CYAN);
+if(key==13&&i==4)
+{
+textbackground(CYAN);
+ho_modiactype();
+getch();
+clrscr();
+ho_modify();
+}
+if(key==13&&i==3)
+{
+textbackground(CYAN);
+ho_modimobile();
+getch();
+clrscr();
+ho_modify();
+}
+if(key==13&&i==2)
+{
+textbackground(CYAN);
+ho_modifname();
+getch();
+clrscr();
+ho_modify();
+}
+if(key==13&&i==1)
+{
+textbackground(CYAN);
+ho_modiaddress();
+getch();
+clrscr();
+ho_modify();
+}
+if(key==13&&i==0)
+{
+textbackground(CYAN);
+ho_modiname();
+getch();
+clrscr();
+ho_modify();
+}
+}while(key!=27);
+}
+void ho_modiname()
+{
+clrscr();
+ int k=0,i;
+ long tmpname;
+ char na[20];
+ gotoxy(15,1);
+ printf("<<***MODIFICATION ON NAME***>>");
+ gotoxy(3,4);
+ printf("ENTER ACCAUNT NO FOR MODIFY :-");
+ textcolor(GREEN);
+gotoxy(35,3);
+cprintf("%c",TLC);
+gotoxy(65,3);
+cprintf("%c",TRC);
+gotoxy(35,5);
+cprintf("%c",BLC);
+gotoxy(65,5);
+cprintf("%c",BRC);
+for(i=36;i<=64;i++)
+{
+gotoxy(i,3);
+cprintf("%c",HRL);
+gotoxy(i,5);
+cprintf("%c",HRL);
+}
+gotoxy(35,4);
+cprintf("%c",VRL);
+gotoxy(65,4);
+cprintf("%c",VRL);
+gotoxy(37,4);
+scanf("%ld",&tmpname);
+ fp=fopen("holder.txt","rb+");
+
+while(fread(&s,sizeof(s),1,fp)==1)
+{
+if(tmpname==s.ho_acno)
+{
+gotoxy(8,7);
+printf("ENTER NEW NAME:->");
+gotoxy(35,6);
+cprintf("%c",TLC);
+gotoxy(65,6);
+cprintf("%c",TRC);
+gotoxy(35,8);
+cprintf("%c",BLC);
+gotoxy(65,8);
+cprintf("%c",BRC);
+for(i=36;i<=64;i++)
+{
+gotoxy(i,6);
+cprintf("%c",HRL);
+gotoxy(i,8);
+cprintf("%c",HRL);
+}
+gotoxy(35,7);
+cprintf("%c",VRL);
+gotoxy(65,7);
+cprintf("%c",VRL);
+gotoxy(37,7);
+fflush(stdin);
+gets(s.ho_name);
+strcpy(na,s.ho_name);
+fseek(fp,-si,1);
+fwrite(&s,sizeof(s),1,fp);
+k=1;
+break;
+}
+}
+if(k==0)
+{
+gotoxy(25,20);
+cprintf("%d ACCAUNT NUMBER NOT FOUND\n",tmpname);
+}
+else{
+gotoxy(25,20);
+cprintf("%s SUCCESSFILLY MODIYFYED\n",na);
+}
+fclose(fp);
+}
+void ho_modifname()
+{
+clrscr();
+ int k=0,i;
+ long tmpname;
+ char na[20];
+ gotoxy(15,1);
+ printf("<<***MODIFICATION ON FATHER'S NAME***>>");
+ gotoxy(3,4);
+ printf("ENTER ACCAUNT NO FOR MODIFY :-");
+ textcolor(GREEN);
+gotoxy(35,3);
+cprintf("%c",TLC);
+gotoxy(65,3);
+cprintf("%c",TRC);
+gotoxy(35,5);
+cprintf("%c",BLC);
+gotoxy(65,5);
+cprintf("%c",BRC);
+for(i=36;i<=64;i++)
+{
+gotoxy(i,3);
+cprintf("%c",HRL);
+gotoxy(i,5);
+cprintf("%c",HRL);
+}
+gotoxy(35,4);
+cprintf("%c",VRL);
+gotoxy(65,4);
+cprintf("%c",VRL);
+gotoxy(37,4);
+scanf("%ld",&tmpname);
+ fp=fopen("holder.txt","rb+");
+
+while(fread(&s,sizeof(s),1,fp)==1)
+{
+if(tmpname==s.ho_acno)
+{
+gotoxy(3,7);
+printf("ENTER NEW FATHER'S NAME:->");
+gotoxy(35,6);
+cprintf("%c",TLC);
+gotoxy(65,6);
+cprintf("%c",TRC);
+gotoxy(35,8);
+cprintf("%c",BLC);
+gotoxy(65,8);
+cprintf("%c",BRC);
+for(i=36;i<=64;i++)
+{
+gotoxy(i,6);
+cprintf("%c",HRL);
+gotoxy(i,8);
+cprintf("%c",HRL);
+}
+gotoxy(35,7);
+cprintf("%c",VRL);
+gotoxy(65,7);
+cprintf("%c",VRL);
+gotoxy(37,7);
+fflush(stdin);
+gets(s.ho_frname);
+strcpy(na,s.ho_frname);
+fseek(fp,-si,1);
+fwrite(&s,sizeof(s),1,fp);
+k=1;
+break;
+}
+}
+if(k==0)
+{
+gotoxy(25,20);
+cprintf("%d ACCAUNT NUMBER NOT FOUND\n",tmpname);
+}
+else{
+gotoxy(25,20);
+cprintf("%s SUCCESSFILLY MODIYFYED\n",na);
+}
+fclose(fp);
+}
+void ho_modiaddress()
+{
+clrscr();
+ int k=0,i;
+ long tmpname;
+ char na[20];
+ gotoxy(15,1);
+ printf("<<***MODIFICATION ON ADDRESS***>>");
+ gotoxy(3,4);
+ printf("ENTER ACCAUNT NO FOR MODIFY :-");
+ textcolor(GREEN);
+gotoxy(35,3);
+cprintf("%c",TLC);
+gotoxy(65,3);
+cprintf("%c",TRC);
+gotoxy(35,5);
+cprintf("%c",BLC);
+gotoxy(65,5);
+cprintf("%c",BRC);
+for(i=36;i<=64;i++)
+{
+gotoxy(i,3);
+cprintf("%c",HRL);
+gotoxy(i,5);
+cprintf("%c",HRL);
+}
+gotoxy(35,4);
+cprintf("%c",VRL);
+gotoxy(65,4);
+cprintf("%c",VRL);
+gotoxy(37,4);
+scanf("%ld",&tmpname);
+ fp=fopen("holder.txt","rb+");
+
+while(fread(&s,sizeof(s),1,fp)==1)
+{
+if(tmpname==s.ho_acno)
+{
+gotoxy(8,7);
+printf("ENTER NEW ADDRESS:->");
+gotoxy(35,6);
+cprintf("%c",TLC);
+gotoxy(65,6);
+cprintf("%c",TRC);
+gotoxy(35,8);
+cprintf("%c",BLC);
+gotoxy(65,8);
+cprintf("%c",BRC);
+for(i=36;i<=64;i++)
+{
+gotoxy(i,6);
+cprintf("%c",HRL);
+gotoxy(i,8);
+cprintf("%c",HRL);
+}
+gotoxy(35,7);
+cprintf("%c",VRL);
+gotoxy(65,7);
+cprintf("%c",VRL);
+gotoxy(37,7);
+fflush(stdin);
+gets(s.ho_address);
+strcpy(na,s.ho_address);
+fseek(fp,-si,1);
+fwrite(&s,sizeof(s),1,fp);
+k=1;
+break;
+}
+}
+if(k==0)
+{
+gotoxy(25,20);
+cprintf("%d ACCAUNT NUMBER NOT FOUND\n",tmpname);
+}
+else{
+gotoxy(25,20);
+cprintf("%s SUCCESSFILLY MODIYFYED\n",na);
+}
+fclose(fp);
+}
+void ho_modiactype()
+{
+clrscr();
+ int k=0,i;
+ long tmpname;
+ char na[20];
+ gotoxy(15,1);
+ printf("<<***MODIFICATION ON A/C(TYPE)***>>");
+ gotoxy(3,4);
+ printf("ENTER ACCAUNT NO FOR MODIFY :-");
+ textcolor(GREEN);
+gotoxy(35,3);
+cprintf("%c",TLC);
+gotoxy(65,3);
+cprintf("%c",TRC);
+gotoxy(35,5);
+cprintf("%c",BLC);
+gotoxy(65,5);
+cprintf("%c",BRC);
+for(i=36;i<=64;i++)
+{
+gotoxy(i,3);
+cprintf("%c",HRL);
+gotoxy(i,5);
+cprintf("%c",HRL);
+}
+gotoxy(35,4);
+cprintf("%c",VRL);
+gotoxy(65,4);
+cprintf("%c",VRL);
+gotoxy(37,4);
+scanf("%ld",&tmpname);
+ fp=fopen("holder.txt","rb+");
+
+while(fread(&s,sizeof(s),1,fp)==1)
+{
+if(tmpname==s.ho_acno)
+{
+gotoxy(8,7);
+printf("ENTER NEW ADDRESS:->");
+gotoxy(35,6);
+cprintf("%c",TLC);
+gotoxy(65,6);
+cprintf("%c",TRC);
+gotoxy(35,8);
+cprintf("%c",BLC);
+gotoxy(65,8);
+cprintf("%c",BRC);
+for(i=36;i<=64;i++)
+{
+gotoxy(i,6);
+cprintf("%c",HRL);
+gotoxy(i,8);
+cprintf("%c",HRL);
+}
+gotoxy(35,7);
+cprintf("%c",VRL);
+gotoxy(65,7);
+cprintf("%c",VRL);
+gotoxy(37,7);
+fflush(stdin);
+gets(s.ho_actype);
+strcpy(na,s.ho_actype);
+fseek(fp,-si,1);
+fwrite(&s,sizeof(s),1,fp);
+k=1;
+break;
+}
+}
+if(k==0)
+{
+gotoxy(25,20);
+cprintf("%d ACCAUNT NUMBER NOT FOUND\n",tmpname);
+}
+else{
+gotoxy(25,20);
+cprintf("%s SUCCESSFILLY MODIYFYED\n",na);
+}
+fclose(fp);
+}
+void ho_modimobile()
+{
+clrscr();
+ int k=0,i;
+ long tmpname;
+ char na[20];
+ gotoxy(15,1);
+ cprintf("<<***MODIFICATION ON MOBILE-NO***>>");
+ gotoxy(3,4);
+ cprintf("ENTER ACCAUNT NO FOR MODIFY :-");
+ textcolor(GREEN);
+gotoxy(35,3);
+cprintf("%c",TLC);
+gotoxy(65,3);
+cprintf("%c",TRC);
+gotoxy(35,5);
+cprintf("%c",BLC);
+gotoxy(65,5);
+cprintf("%c",BRC);
+for(i=36;i<=64;i++)
+{
+gotoxy(i,3);
+cprintf("%c",HRL);
+gotoxy(i,5);
+cprintf("%c",HRL);
+}
+gotoxy(35,4);
+cprintf("%c",VRL);
+gotoxy(65,4);
+cprintf("%c",VRL);
+gotoxy(37,4);
+scanf("%ld",&tmpname);
+ fp=fopen("holder.txt","rb+");
+
+while(fread(&s,sizeof(s),1,fp)==1)
+{
+if(tmpname==s.ho_acno)
+{
+gotoxy(8,7);
+printf("ENTER NEW MOBILE-NO:->");
+gotoxy(35,6);
+cprintf("%c",TLC);
+gotoxy(65,6);
+cprintf("%c",TRC);
+gotoxy(35,8);
+cprintf("%c",BLC);
+gotoxy(65,8);
+cprintf("%c",BRC);
+for(i=36;i<=64;i++)
+{
+gotoxy(i,6);
+cprintf("%c",HRL);
+gotoxy(i,8);
+cprintf("%c",HRL);
+}
+gotoxy(35,7);
+cprintf("%c",VRL);
+gotoxy(65,7);
+cprintf("%c",VRL);
+gotoxy(37,7);
+fflush(stdin);
+cscanf("%s",s.ho_phone);
+//gets(s.ho_name);
+strcpy(na,s.ho_phone);
+fseek(fp,-si,1);
+fwrite(&s,sizeof(s),1,fp);
+k=1;
+break;
+}
+}
+if(k==0)
+{
+gotoxy(25,20);
+cprintf("%d ACCAUNT NUMBER NOT FOUND\n",tmpname);
+}
+else{
+gotoxy(25,20);
+cprintf("%s SUCCESSFILLY MODIYFYED\n",na);
+}
+fclose(fp);
+}
+void ho_modidob()
+{
+clrscr();
+ int k=0,i;
+ long tmpname;
+ char na[20];
+ gotoxy(15,1);
+ printf("<<***MODIFICATION ON D.O.B***>>");
+ gotoxy(3,4);
+ printf("ENTER ACCAUNT NO FOR MODIFY :-");
+ textcolor(GREEN);
+gotoxy(35,3);
+cprintf("%c",TLC);
+gotoxy(65,3);
+cprintf("%c",TRC);
+gotoxy(35,5);
+cprintf("%c",BLC);
+gotoxy(65,5);
+cprintf("%c",BRC);
+for(i=36;i<=64;i++)
+{
+gotoxy(i,3);
+cprintf("%c",HRL);
+gotoxy(i,5);
+cprintf("%c",HRL);
+}
+gotoxy(35,4);
+cprintf("%c",VRL);
+gotoxy(65,4);
+cprintf("%c",VRL);
+gotoxy(37,4);
+scanf("%ld",&tmpname);
+ fp=fopen("holder.txt","rb+");
+
+while(fread(&s,sizeof(s),1,fp)==1)
+{
+if(tmpname==s.ho_acno)
+{
+gotoxy(3,7);
+printf("ENTER NEW DATE OF BIRTH :->");
+gotoxy(35,6);
+cprintf("%c",TLC);
+gotoxy(65,6);
+cprintf("%c",TRC);
+gotoxy(35,8);
+cprintf("%c",BLC);
+gotoxy(65,8);
+cprintf("%c",BRC);
+for(i=36;i<=64;i++)
+{
+gotoxy(i,6);
+cprintf("%c",HRL);
+gotoxy(i,8);
+cprintf("%c",HRL);
+}
+gotoxy(35,7);
+cprintf("%c",VRL);
+gotoxy(65,7);
+cprintf("%c",VRL);
+gotoxy(37,7);
+fflush(stdin);
+gets(s.ho_dob);
+strcpy(na,s.ho_dob);
+fseek(fp,-si,1);
+fwrite(&s,sizeof(s),1,fp);
+k=1;
+break;
+}
+}
+if(k==0)
+{
+gotoxy(25,20);
+cprintf("%d ACCAUNT NUMBER NOT FOUND\n",tmpname);
+}
+else{
+gotoxy(25,20);
+cprintf("%s SUCCESSFILLY MODIYFYED\n",na);
+}
+fclose(fp);
+}
+void ho_sortname()
+{
+struct ho_record store[50],temp;
+int j,k,p=0,one,n;
+int i=5;
+clrscr();
+fp=fopen("holder.txt","rb");
+gotoxy(1,3);
+cprintf("HO-NAME");
+gotoxy(15,3);
+cprintf("HO-FR.NAME");
+gotoxy(30,3);
+cprintf("HO-ADDRESS");
+gotoxy(45,3);
+cprintf("HO-ADDHAR");
+gotoxy(58,3);
+cprintf("HO-phone.no");
+gotoxy(70,3);
+
+cprintf("HO-date");
+printf("\n------------------------------------------------------------------------------\n");
+fp=fopen("holder.txt","rb");
+while(fread(&s,sizeof(s),1,fp)==1)
+store[p++]=s;
+for(j=0;j<p-1;j++)
+{
+for(k=j+1;k<p;k++)
+{
+if(strcmpi(store[j].ho_name,store[k].ho_name)>0)
+{
+temp=store[j];
+store[j]=store[k];
+store[k]=temp;
+}
+}
+}
+for(j=0;j<p;j++)
+{
+gotoxy(1,i);
+printf("%s",store[j].ho_name);
+gotoxy(15,i);
+printf("%s",store[j].ho_frname);
+gotoxy(30,i);
+printf("%s",store[j].ho_address);
+gotoxy(45,i);
+printf("%s",store[j].ho_addhar);
+gotoxy(58,i);
+printf("%s",store[j].ho_phone);
+gotoxy(70,i);
+printf("%s",store[j].ho_date);
+i++;
+}
+printf("\n--------------------------------------------------------------------------------\n");
+printf("\n");
+
+fclose(fp);
+}
+
+void singhup()
+{
+int i;
+clrscr();
+//textbackground(BLUE);
+textcolor(YELLOW);
+gotoxy(2,2);
+cprintf("%c",TLC);
+gotoxy(80,2);
+cprintf("%c",TRC);
+gotoxy(2,25);
+cprintf("%c",BLC);
+gotoxy(80,25);
+cprintf("%c",BRC);
+for(i=3;i<=79;i++)
+{
+gotoxy(i,1);
+cprintf("%c",HRL);
+gotoxy(i,24);
+cprintf("%c",HRL);
+}
+for(i=2;i<24;i++)
+{
+gotoxy(2,i);
+cprintf("%c",VRL);
+gotoxy(80,i);
+cprintf("%c",VRL);
+}
+//---------------
+gotoxy(20,8);
+cprintf("%c",TLC);
+gotoxy(60,8);
+cprintf("%c",TRC);
+gotoxy(20,18);
+cprintf("%c",BLC);
+gotoxy(60,18);
+cprintf("%c",BRC);
+for(i=21;i<=59;i++)
+{
+gotoxy(i,8);
+cprintf("%c",HRL);
+gotoxy(i,18);
+cprintf("%c",HRL);
+gotoxy(i,10);
+cprintf("%c",HRL);
+}
+for(i=9;i<18;i++)
+{
+gotoxy(20,i);
+cprintf("%c",VRL);
+gotoxy(60,i);
+cprintf("%c",VRL);
+}
+gotoxy(28,9);
+cprintf("...SINGH-UP-PASSWORD...");
+gotoxy(22,12);
+cprintf("ENTER USER NAME:-");
+gotoxy(40,11);
+cprintf("%c",TLC);
+gotoxy(59,11);
+cprintf("%c",TRC);
+gotoxy(40,13);
+cprintf("%c",BLC);
+gotoxy(59,13);
+cprintf("%c",BRC);
+for(i=41;i<=58;i++)
+{
+gotoxy(i,11);
+cprintf("%c",HRL);
+gotoxy(i,13);
+cprintf("%c",HRL);
+}
+gotoxy(40,12);
+cprintf("%c",VRL);
+gotoxy(59,12);
+cprintf("%c",VRL);
+
+gotoxy(21,14);
+cprintf("---------------------------------------");
+gotoxy(22,16);
+cprintf("ENTER PASSWORD:-");
+gotoxy(40,15);
+cprintf("%c",TLC);
+gotoxy(59,15);
+cprintf("%c",TRC);
+gotoxy(40,17);
+cprintf("%c",BLC);
+gotoxy(59,17);
+cprintf("%c",BRC);
+for(i=41;i<=58;i++)
+{
+gotoxy(i,15);
+cprintf("%c",HRL);
+gotoxy(i,17);
+cprintf("%c",HRL);
+}
+gotoxy(40,16);
+cprintf("%c",VRL);
+gotoxy(59,16);
+cprintf("%c",VRL);
+textcolor(6);
+fps=fopen("password.txt","wb");
+gotoxy(41,12);
+gets(p.name);
+gotoxy(41,16);
+cscanf("%s",p.pass);
+//------------------
+fwrite(&p,sizeof(p),1,fps);
+fclose(fps);
+}
+
+
+int singhin()
+{
+clrscr();
+int i,n1=0,p1=0;
+char name[20],pass[20];
+textbackground(CYAN);
+textcolor(YELLOW);
+gotoxy(2,2);
+cprintf("%c",TLC);
+gotoxy(80,2);
+cprintf("%c",TRC);
+gotoxy(2,25);
+cprintf("%c",BLC);
+gotoxy(80,25);
+cprintf("%c",BRC);
+for(i=3;i<=79;i++)
+{
+gotoxy(i,1);
+cprintf("%c",HRL);
+gotoxy(i,24);
+cprintf("%c",HRL);
+}
+for(i=2;i<24;i++)
+{
+gotoxy(2,i);
+cprintf("%c",VRL);
+gotoxy(80,i);
+cprintf("%c",VRL);
+}
+//---------------
+gotoxy(20,8);
+cprintf("%c",TLC);
+gotoxy(60,8);
+cprintf("%c",TRC);
+gotoxy(20,18);
+cprintf("%c",BLC);
+gotoxy(60,18);
+cprintf("%c",BRC);
+for(i=21;i<=59;i++)
+{
+gotoxy(i,8);
+cprintf("%c",HRL);
+gotoxy(i,18);
+cprintf("%c",HRL);
+gotoxy(i,10);
+cprintf("%c",HRL);
+}
+for(i=9;i<18;i++)
+{
+gotoxy(20,i);
+cprintf("%c",VRL);
+gotoxy(60,i);
+cprintf("%c",VRL);
+}
+gotoxy(28,9);
+cprintf("...SINGH-IN-PASSWORD...");
+gotoxy(22,12);
+cprintf("ENTER USER NAME:-");
+gotoxy(40,11);
+cprintf("%c",TLC);
+gotoxy(59,11);
+cprintf("%c",TRC);
+gotoxy(40,13);
+cprintf("%c",BLC);
+gotoxy(59,13);
+cprintf("%c",BRC);
+for(i=41;i<=58;i++)
+{
+gotoxy(i,11);
+cprintf("%c",HRL);
+gotoxy(i,13);
+cprintf("%c",HRL);
+}
+gotoxy(40,12);
+cprintf("%c",VRL);
+gotoxy(59,12);
+cprintf("%c",VRL);
+
+gotoxy(21,14);
+cprintf("---------------------------------------");
+gotoxy(22,16);
+cprintf("ENTER PASSWORD:-");
+gotoxy(40,15);
+cprintf("%c",TLC);
+gotoxy(59,15);
+cprintf("%c",TRC);
+gotoxy(40,17);
+cprintf("%c",BLC);
+gotoxy(59,17);
+cprintf("%c",BRC);
+for(i=41;i<=58;i++)
+{
+gotoxy(i,15);
+cprintf("%c",HRL);
+gotoxy(i,17);
+cprintf("%c",HRL);
+}
+gotoxy(40,16);
+cprintf("%c",VRL);
+gotoxy(59,16);
+cprintf("%c",VRL);
+textcolor(6);
+fps=fopen("password.txt","rb");
+while(fread(&p,sizeof(p),1,fps)==1)
+gotoxy(41,12);
+gets(name);
+if(strcmpi(p.name,name)==0)
+n1=1;
+gotoxy(41,16);
+cscanf("%s",pass);
+if(strcmpi(p.pass,pass)==0)
+p1=1;
+//------------------
+fclose(fps);
+if(n1==1&&p1==1)
+return p1;
+getch();
+}
+void loding2()
+{
+int gd=DETECT,gm,x=160,y=250,i;
+initgraph(&gd,&gm,"\\tc\\bgi");
+setcolor(YELLOW);
+outtextxy(230,220,"LOADING...");
+for(i=x;i<350;i++)
+{
+setcolor(RED);
+circle(i,y,10);
+setfillstyle(1,4);
+floodfill(i,y,RED);
+delay(15);
+}
+closegraph();
+}
+void recetemp()
+{
+fp=fopen("bank_employ.txt","rb");
+ftemp=fopen("golder.txt","wb");
+fclose(fp);
+fclose(ftemp);
+remove("bank_employ.txt");
+rename("golder.txt","bank_employ.txt");
+}
+void recet_ho()
+{
+fp=fopen("holder.txt","rb");
+ftemp=fopen("golder.txt","wb");
+fclose(fp);
+fclose(ftemp);
+remove("holder.txt");
+rename("golder.txt","holder.txt");
+}
+void widra()
+{
+clrscr();
+int ad=0,ac=0,n=0,b=0,p=0,cheek=0;
+long acno,wed;
+char name[30],addhar[20],branch[15],phone[15];
+//fp=fopen("holder.txt","ab+");
+gotoxy(30,2);
+fflush(stdin);
+printf("WELCOME TO WIDRAWEL MONEY");
+printf("\nEnter accaunt no:-");
+scanf("%ld",&acno);
+fflush(stdin);
+printf("\nEnter name no:-");
+gets(name);
+printf("\nEnter branch no:-");
+gets(branch);
+printf("\nEnter addhar no:-");
+gets(addhar);
+printf("\nEnter phone no:-");
+scanf("%s",phone);
+fp=fopen("holder.txt","ab+");
+while(fread(&s,sizeof(s),1,fp)==1)
+if(acno==s.ho_acno)
+{ac=1;}
+if(strcmpi(name,s.ho_name)==0)
+{n=1;}
+if(strcmpi(branch,s.ho_branch)==0)
+{b=1;}
+if(strcmpi(addhar,s.ho_addhar)==0)
+{ad=1;}
+if(strcmpi(phone,s.ho_phone)==0)
+{p=1;}
+if(n==1&&ac==1&&b==1&&ad==1&&p==1)
+{
+gotoxy(1,10);
+cprintf("HO-NAME");
+gotoxy(15,10);
+cprintf("HO-FR.NAME");
+gotoxy(30,10);
+cprintf("HO-ADDRESS");
+gotoxy(45,10);
+cprintf("HO-ADDHAR");
+gotoxy(58,10);
+cprintf("HO-phone.no");
+gotoxy(70,10);
+cprintf("HO-D.O.B");
+gotoxy(1,14);
+cprintf("HO-A/C-no");
+gotoxy(15,14);
+cprintf("HO-BRANCH");
+gotoxy(30,14);
+cprintf("HO-A/C(TYPE)");
+gotoxy(45,14);
+cprintf("HO-IFSE");
+gotoxy(58,14);
+cprintf("AVELBLE-BAL");
+gotoxy(70,14);
+cprintf("HO-o/p date");
+ textcolor(YELLOW);
+gotoxy(1,11);
+printf("%s",s.ho_name);
+gotoxy(15,11);
+printf("%s",s.ho_frname);
+gotoxy(30,11);
+printf("%s",s.ho_address);
+gotoxy(45,11);
+printf("%s",s.ho_addhar);
+gotoxy(58,11);
+printf("%s",s.ho_phone);
+gotoxy(70,11);
+printf("%s",s.ho_dob);
+gotoxy(1,15);
+printf("%ld",s.ho_acno);
+gotoxy(15,15);
+printf("%s",s.ho_branch);
+gotoxy(30,15);
+printf("%s",s.ho_actype);
+gotoxy(45,15);
+printf("%s",s.ho_ifsc);
+gotoxy(58,15);
+printf("%ld",s.ho_fdepo);
+gotoxy(70,15);
+printf("%s",s.ho_date);
+cheek=1;
+ }
+if(cheek==0)
+{
+gotoxy(10,12);
+cprintf("inputed holder data does not match plese cheek the data");
+}
+else
+{
+gotoxy(8,17);
+cprintf("enter amount has to be wedrawel:-");
+cscanf("%ld",&wed);
+if(s.ho_fdepo<wed)
+printf("\nholder has not sufficient balance try agayn latter");
+else
+{
+s.ho_fdepo=s.ho_fdepo-wed;
+fwrite(&s,sizeof(s),1,fp);
+printf("\nwidrawel has successfully");
+}
+}
+fclose(fp);
+getch();
+}
+

@@ -1,0 +1,21 @@
+binary to decimal
+#include<stdio.h>
+#include<conio.h>
+void main()
+{
+long int n;
+int r,f=1,s=0;
+clrscr();
+printf("enter the binary no =");
+scanf("%ld",&n);
+while(n!=0)
+{
+r=n%10;
+if(r==1)
+s=s+f;
+f=f*2;
+n/=10;
+}
+printf("decimal no=%d",s);
+getch();
+}
