@@ -2,6 +2,7 @@ package com.learn.restapi.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,11 @@ public class MyCourseService implements CourseService {
 		return mylist;
 	}
 @Override
+public void deleteCourse(String courseid) {
+	mylist=this.mylist.stream().filter(e->!e.getCoid().equals(courseid)).collect(Collectors.toList());
+	
+}
+@Override
 public Course getCourse(String coid) {
 	Course c=null;
 	for(Course cou:mylist)
@@ -42,6 +48,20 @@ public Course addCourse(Course course) {
 	mylist.add(course);
 	System.out.println("hello nikesh"+course.getCoid());
 	return course;
+}
+@Override
+public Course updateCourse(Course course) {
+	mylist.forEach(e->{if(e.getCoid().equals(course.getCoid()))
+	{
+		e.setConame(course.getConame());
+		e.setCoursfe(course.getCoursfe());
+		e.setDuration(course.getDuration());
+	}
+	}
+			
+			);
+	return course;
+
 }
    
 }
