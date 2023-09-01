@@ -38,13 +38,14 @@ public class Course {
 	public void setCoursfe(long coursfe) {
 		this.coursfe = coursfe;}
 
-//	@Override
-//	public String toString() {
-//		return "Course [coname=" + coname + ", duration=" + duration + ", coid=" + coid + ", coursfe=" + coursfe + "]";
-//	}
+	@Override
+	public String toString() {
+		return "Course [coname=" + coname + ", coid=" + coid + ", coursfe=" + coursfe + ", duration=" + duration + "]";
+		}
+	}
 	 
 	
 	 
 	
 	 
-}
+

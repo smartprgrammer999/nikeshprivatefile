@@ -35,10 +35,13 @@ public Course getCourse(String coid) {
 	}
 	return c;
 }
+
 @Override
-public Course addCourse(Course pq) {
-	mylist.add(pq);
-	return pq;
+public Course addCourse(Course course) {
+	System.out.println("hello nikesh"+course.getCoursfe());
+	mylist.add(course);
+	System.out.println("hello nikesh"+course.getCoid());
+	return course;
 }
    
 }

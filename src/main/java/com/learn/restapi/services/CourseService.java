@@ -7,6 +7,6 @@ import com.learn.restapi.entitycourse.Course;
 public interface CourseService {
 	public List<Course> getCourses();
 	public Course getCourse(String coid);
-	public Course addCourse(Course pq); 
+	public Course addCourse(Course course); 
 
 }

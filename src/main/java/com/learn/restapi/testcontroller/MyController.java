@@ -22,19 +22,23 @@ public class MyController {
 		return "Gaya is my home";
 	}
 	@GetMapping("/course")
+	//get the course
   public List<Course> getCourse()
   {
 		//System.out.println("hello nikesh");
 	 return this.courseserv.getCourses();
   }
+	//get particular course by id 
 	@GetMapping("/course/{coid}")
 	public Course getCourse(@PathVariable String coid)
 	{
 		return this.courseserv.getCourse(coid);
 	}
+	//post the course
 	@PostMapping("/course")
-	public Course addCourse(@RequestBody Course pq)
+	public Course addCourse(@RequestBody Course course)
 	{
-		return this.courseserv.addCourse(pq);
+		 
+		return this.courseserv.addCourse(course);
 	}
 }
