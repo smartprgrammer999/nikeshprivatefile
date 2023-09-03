@@ -48,7 +48,7 @@ public class MyController {
 	//update course
 	@PutMapping("/course")
 	public Course updateCourse(@RequestBody Course course)
-	{
+	{ 
 		return this.courseserv.updateCourse(course);
 	}
 	//delete course

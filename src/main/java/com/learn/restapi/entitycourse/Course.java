@@ -1,8 +1,13 @@
 package com.learn.restapi.entitycourse;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class Course {
 	private String coname;
 	private String duration;
+	@Id
 	private String coid;
 	private long coursfe;
 	public Course() {
