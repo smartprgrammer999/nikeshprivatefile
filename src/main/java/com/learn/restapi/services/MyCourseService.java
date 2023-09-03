@@ -43,7 +43,7 @@ public Course getCourse(String coid) {
 //			break;
 //		}
 //	}
-	System.out.println("MY id="+coid);
+
 	return coursedao.getOne(coid);
 }
 
